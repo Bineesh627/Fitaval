@@ -14,36 +14,14 @@ import { ALERTS0 } from '../data/alerts';
 import { ROLES } from '../data/roles';
 import { PLANS0 } from '../data/plans';
 import { getSession } from '../../portal/session';
+import { API_BASE, USE_MOCK } from '../../config/env';
+import { httpClient } from '../../shared/api/httpClient';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.fitaval.com/v1';
-const USE_MOCK = import.meta.env.VITE_ENABLE_MOCK_API !== 'false';
+export { API_BASE, USE_MOCK };
 
 // Helper to execute authenticated requests to real backend
 async function apiRequest(endpoint, options = {}) {
-  const session = getSession();
-  const token = session?.token || localStorage.getItem('fitaval_admin_token') || '';
-
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...options.headers,
-  };
-
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const error = new Error(errorData.message || `API error: ${response.status}`);
-    error.status = response.status;
-    error.data = errorData;
-    throw error;
-  }
-
-  if (response.status === 204) return null;
-  return response.json();
+  return httpClient(endpoint, options);
 }
 
 // In-Memory / LocalStorage Mock Data Store

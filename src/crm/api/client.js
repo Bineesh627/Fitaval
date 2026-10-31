@@ -27,9 +27,10 @@ import {
   MOCK_MEMBER_CHECKINS,
 } from '@/data';
 import { clearSession, getSession } from '../../portal/session';
+import { API_BASE, USE_MOCK } from '../../config/env';
+import { httpClient } from '../../shared/api/httpClient';
 
-export const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
-export const USE_MOCK = import.meta.env.VITE_ENABLE_MOCK_API !== 'false';
+export { API_BASE, USE_MOCK };
 
 const STORAGE_KEYS = {
   MEMBERS: 'fitaval_members',
@@ -47,38 +48,7 @@ const STORAGE_KEYS = {
 
 // Helper for authenticated HTTP requests to Django REST Framework backend
 async function apiRequest(endpoint, options = {}) {
-  const session = getSession();
-  const token = session?.token || localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || '';
-
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...options.headers,
-  };
-
-  const cleanBase = API_BASE.replace(/\/+$/, '');
-  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  const url = `${cleanBase}${cleanEndpoint}`;
-
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const message =
-      errorData.detail ||
-      errorData.message ||
-      (typeof errorData === 'string' ? errorData : `API request failed with status ${response.status}`);
-    const error = new Error(message);
-    error.status = response.status;
-    error.data = errorData;
-    throw error;
-  }
-
-  if (response.status === 204) return null;
-  return response.json();
+  return httpClient(endpoint, options);
 }
 
 // Seed initial gym CRM data if not already present (mock mode)
@@ -523,17 +493,8 @@ export const client = {
         if (!USE_MOCK) {
           const formData = new FormData();
           formData.append('file', file);
-          const session = getSession();
-          const token = session?.token || localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || '';
-          const response = await fetch(`${API_BASE}/crm/upload/`, {
-            method: 'POST',
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-            body: formData,
-          });
-          if (response.ok) {
-            const data = await response.json();
-            return { file_url: data.file_url || data.url };
-          }
+          const data = await httpClient.post('/crm/upload/', formData);
+          return { file_url: data?.file_url || data?.url };
         }
 
         return new Promise((resolve, reject) => {
