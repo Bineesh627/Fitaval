@@ -1,0 +1,156 @@
+/**
+ * ==============================================================================
+ * Fitaval CRM — Staff & Trainers UI Constants & Mock Data
+ * ==============================================================================
+ */
+
+export const SPECIALIZATION_OPTIONS = [
+  "Strength Training",
+  "Personal Training",
+  "Yoga",
+  "Mobility",
+  "Weight Loss",
+  "CrossFit",
+  "Functional Training",
+  "Rehabilitation",
+  "Nutrition",
+  "HIIT Conditioning",
+];
+
+export const STAFF_ROLE_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "trainer", label: "Trainers" },
+  { id: "staff", label: "Staff" },
+];
+
+export const STAFF_ROLES = [
+  {
+    role: "trainer",
+    title: "Trainer",
+    badge: "Fitness Coach",
+    description: "Fitness coach with specialties, certifications, experience, and assigned member roster.",
+    photoLabel: "Coach Photo",
+    bioLabel: "Coach Bio",
+    hasSpecializations: true,
+    hasExperience: true,
+    hasCertifications: true,
+  },
+  {
+    role: "staff",
+    title: "Staff",
+    badge: "Operations",
+    description: "Gym receptionists, managers, floor supervisors, customer care, and operations staff.",
+    photoLabel: "Staff Photo",
+    bioLabel: "Bio",
+    hasSpecializations: false,
+    hasExperience: false,
+    hasCertifications: false,
+  },
+];
+
+export const STAFF_PAGE_TABS = [
+  { id: "roster", label: "Roster" },
+  { id: "attendance", label: "Attendance" },
+];
+
+export const MOCK_TRAINER_IMAGES = {
+  alex: "https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=600&q=80",
+  sarah: "https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=600&q=80",
+  vikram: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=600&q=80",
+  neha: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
+  ramesh: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+};
+
+export const MOCK_TRAINERS = [
+  {
+    id: "trn_1",
+    role: "trainer",
+    name: "Alex Carter",
+    photo_url: MOCK_TRAINER_IMAGES.alex,
+    phone: "+91 98333 44551",
+    email: "alex.carter@fitaval.com",
+    specialization: "CrossFit & Functional Training",
+    specializations: ["CrossFit", "Functional Training", "Strength Training"],
+    experience_years: 7,
+    certifications: "CrossFit Level 2, ACE Certified Personal Trainer, CPR/AED",
+    bio: "Passionate about athletic performance, functional movement mechanics, and high-intensity conditioning.",
+    availability: "Available",
+    working_days: "Monday – Friday",
+    working_hours: "06:00 AM – 02:00 PM",
+    status: "active",
+    created_date: "2026-08-01",
+  },
+  {
+    id: "trn_2",
+    role: "trainer",
+    name: "Sarah Jenkins",
+    photo_url: MOCK_TRAINER_IMAGES.sarah,
+    phone: "+91 98444 55662",
+    email: "sarah.jenkins@fitaval.com",
+    specialization: "Strength & Hypertrophy Coach",
+    specializations: ["Strength Training", "Personal Training", "Nutrition"],
+    experience_years: 5,
+    certifications: "CSCS (NSCA), ISSA Bodybuilding Specialist",
+    bio: "Helping clients build sustainable strength, lean muscle mass, and progressive overload discipline.",
+    availability: "Available",
+    working_days: "Monday – Saturday",
+    working_hours: "01:00 PM – 09:00 PM",
+    status: "active",
+    created_date: "2026-08-15",
+  },
+  {
+    id: "trn_3",
+    role: "trainer",
+    name: "Vikram Malhotra",
+    photo_url: MOCK_TRAINER_IMAGES.vikram,
+    phone: "+91 98555 66773",
+    email: "vikram.malhotra@fitaval.com",
+    specialization: "Mobility & Athletic Rehabilitation",
+    specializations: ["Mobility", "Rehabilitation", "Yoga"],
+    experience_years: 8,
+    certifications: "B.P.T (Physiotherapy), FMS Level 2 Certified",
+    bio: "Corrective posture specialist focusing on injury-free strength development and dynamic mobility.",
+    availability: "Available",
+    working_days: "Monday – Friday",
+    working_hours: "06:00 AM – 03:00 PM",
+    status: "active",
+    created_date: "2026-08-20",
+  },
+  {
+    id: "stf_1",
+    role: "staff",
+    name: "Neha Kapoor",
+    photo_url: MOCK_TRAINER_IMAGES.neha,
+    phone: "+91 98222 33441",
+    email: "neha.kapoor@fitaval.com",
+    specialization: "Front Desk & Member Experience",
+    specializations: ["Member Onboarding", "CRM Administration"],
+    experience_years: 3,
+    certifications: "Hospitality & Front Desk Operations",
+    bio: "Manages front-desk check-ins, member orientation tours, and client membership inquiries.",
+    availability: "Available",
+    working_days: "Monday – Saturday",
+    working_hours: "09:00 AM – 06:00 PM",
+    status: "active",
+    created_date: "2026-09-01",
+  },
+  {
+    id: "stf_2",
+    role: "staff",
+    name: "Ramesh Yadav",
+    role_title: "Gym Operations Manager",
+    photo_url: MOCK_TRAINER_IMAGES.ramesh,
+    phone: "+91 98111 22330",
+    email: "ramesh.yadav@fitaval.com",
+    specialization: "Gym Operations & Equipment Maintenance",
+    specializations: ["Equipment Maintenance", "Safety Protocols"],
+    experience_years: 6,
+    certifications: "Facility Safety & First Aid Certified",
+    bio: "Supervises day-to-day gym floor maintenance, hygiene audits, and vendor management.",
+    availability: "Available",
+    working_days: "Monday – Saturday",
+    working_hours: "05:30 AM – 01:30 PM",
+    status: "active",
+    created_date: "2026-09-05",
+  },
+];

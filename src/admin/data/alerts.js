@@ -1,0 +1,42 @@
+export const ALERTS0 = [
+  {
+    id: 'n1',
+    type: 'capacity',
+    title: 'Evening Strength is full',
+    desc: '16 of 16 spots booked at Kochi Central, 18:00. Waitlist has 3 members.',
+    time: '6 min ago',
+    read: false,
+  },
+  {
+    id: 'n2',
+    type: 'expiry',
+    title: '14 memberships expire this week',
+    desc: '9 in Kochi Central and 5 in Trivandrum Hub. Renewal reminders are ready to send.',
+    time: '42 min ago',
+    read: false,
+  },
+  {
+    id: 'n3',
+    type: 'denied',
+    title: 'Frozen member tried to enter',
+    desc: 'Rohit Varma (FTV-1-1119-C0D5A9) was denied at Gate 1.',
+    time: '1 hr ago',
+    read: false,
+  },
+  {
+    id: 'n4',
+    type: 'staff',
+    title: 'Late check-in',
+    desc: 'Reshma Nair checked in 21 minutes after shift start at Trivandrum Hub.',
+    time: '2 hr ago',
+    read: true,
+  },
+  {
+    id: 'n5',
+    type: 'sync',
+    title: 'Flutter app sync complete',
+    desc: '38 profile updates pulled from the member app.',
+    time: '3 hr ago',
+    read: true,
+  },
+];
