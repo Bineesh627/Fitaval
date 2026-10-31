@@ -4,7 +4,12 @@
  */
 
 const rawMode = import.meta.env.MODE || (import.meta.env.PROD ? 'production' : 'development');
-export const IS_PROD = import.meta.env.PROD || rawMode === 'production';
+const appEnv = import.meta.env.VITE_APP_ENV;
+
+// IS_PROD is true when running in a production environment.
+// When developing locally or running dev previews (VITE_APP_ENV === 'development'),
+// it remains false to allow local mock mode and localhost Django API targets.
+export const IS_PROD = appEnv === 'production' || (import.meta.env.PROD && appEnv !== 'development' && rawMode !== 'development');
 export const IS_TEST = rawMode === 'test' || (typeof process !== 'undefined' && process.env?.NODE_ENV === 'test');
 
 // Fail-closed mock policy:
