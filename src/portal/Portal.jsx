@@ -7,10 +7,73 @@
 // so the two apps' styles never mix.
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { getSession, homePath } from './session';
+import { validateEnv, IS_PROD } from '../config/env';
+import { tokenManager } from '../shared/auth/tokenManager';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
+
+const envStatus = validateEnv();
+
+export const ConfigErrorScreen = ({ errors }) => (
+  <div
+    style={{
+      position: 'fixed',
+      inset: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#09090b',
+      color: '#fff',
+      padding: 24,
+      textAlign: 'center',
+      fontFamily: "'Inter', system-ui, sans-serif",
+      zIndex: 999999,
+    }}
+  >
+    <div
+      style={{
+        width: 48,
+        height: 48,
+        borderRadius: '50%',
+        background: 'rgba(239, 68, 68, 0.15)',
+        color: '#ef4444',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 16,
+      }}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+    </div>
+    <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>Configuration Error</h2>
+    <p style={{ color: '#a1a1aa', maxWidth: 480, marginBottom: 16, fontSize: 14 }}>
+      The application cannot start because the production environment is not configured securely.
+    </p>
+    <div
+      style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: '12px 16px',
+        color: '#f87171',
+        fontSize: 13,
+        textAlign: 'left',
+        maxWidth: 520,
+      }}
+    >
+      {errors.map((err, i) => (
+        <div key={i} style={{ marginBottom: 4 }}>• {err}</div>
+      ))}
+    </div>
+  </div>
+);
 
 const AUTH_PAGES = {
   '/login': Login,
@@ -121,8 +184,18 @@ export default function Portal() {
       setSession(getSession());
     };
     window.addEventListener('popstate', onLocationChange);
-    return () => window.removeEventListener('popstate', onLocationChange);
+    const unsub = tokenManager.onAuthChange(() => {
+      setSession(getSession());
+    });
+    return () => {
+      window.removeEventListener('popstate', onLocationChange);
+      unsub();
+    };
   }, []);
+
+  if (IS_PROD && !envStatus.valid) {
+    return <ConfigErrorScreen errors={envStatus.errors} />;
+  }
 
   // Idle prefetch CRM & Admin chunks so when user logs in, load is instant
   useEffect(() => {

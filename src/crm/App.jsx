@@ -27,7 +27,7 @@ const LoginRedirect = () => {
 };
 
 const AppRoutes = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Attach Enter key navigation handler across all CRM forms and modals
   useEffect(() => {
@@ -56,6 +56,12 @@ const AppRoutes = () => {
       navigateToLogin();
       return null;
     }
+  }
+
+  // Route protection: fail closed if user is not authenticated
+  if (!isAuthenticated && !isLoadingAuth) {
+    navigateToLogin();
+    return null;
   }
 
   return (

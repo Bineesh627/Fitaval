@@ -132,13 +132,6 @@ export const tokenManager = {
 
     try {
       ss()?.setItem(STORAGE_KEYS.SESSION, JSON.stringify(session));
-      // Sync legacy CRM/Admin storage keys for backward compatibility with existing sub-components
-      if (session.role === 'crm') {
-        ls()?.setItem(STORAGE_KEYS.CRM_USER, JSON.stringify({ email: session.email, name: session.name, role: 'crm' }));
-        if (session.token) ls()?.setItem(STORAGE_KEYS.CRM_TOKEN, session.token);
-      } else if (session.role === 'admin') {
-        if (session.token) ls()?.setItem(STORAGE_KEYS.ADMIN_TOKEN, session.token);
-      }
     } catch {
       /* ignore */
     }

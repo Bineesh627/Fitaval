@@ -5,7 +5,7 @@
 
 const rawMode = import.meta.env.MODE || (import.meta.env.PROD ? 'production' : 'development');
 export const IS_PROD = import.meta.env.PROD || rawMode === 'production';
-export const IS_TEST = rawMode === 'test' || typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
+export const IS_TEST = rawMode === 'test' || (typeof process !== 'undefined' && process.env?.NODE_ENV === 'test');
 
 // Fail-closed mock policy:
 // Mock mode is strictly forbidden in production.
@@ -19,6 +19,9 @@ const rawApiBase = import.meta.env.VITE_API_BASE_URL;
 export const API_BASE = (function resolveApiBase() {
   if (rawApiBase && typeof rawApiBase === 'string') {
     return rawApiBase.trim().replace(/\/+$/, '');
+  }
+  if (IS_PROD) {
+    return ''; // Must not default to local Django in production
   }
   return DEFAULT_DEV_API;
 })();
@@ -35,10 +38,10 @@ export function validateEnv() {
   const warnings = [];
 
   if (IS_PROD) {
-    if (!rawApiBase) {
-      errors.push('VITE_API_BASE_URL is not set in production. App will not function correctly.');
+    if (!rawApiBase || !rawApiBase.trim()) {
+      errors.push('VITE_API_BASE_URL is required in production but was not provided.');
     } else if (rawApiBase.includes('127.0.0.1') || rawApiBase.includes('localhost')) {
-      errors.push(`VITE_API_BASE_URL (${rawApiBase}) points to localhost in a production build.`);
+      errors.push(`VITE_API_BASE_URL (${rawApiBase}) points to localhost/127.0.0.1 in a production build.`);
     }
 
     if (import.meta.env.VITE_ENABLE_MOCK_API === 'true') {
@@ -63,8 +66,15 @@ export function validateEnv() {
   };
 }
 
+export function enforceEnv() {
+  const result = validateEnv();
+  if (IS_PROD && !result.valid) {
+    throw new Error(`[CRITICAL CONFIG ERROR] Production startup aborted: ${result.errors.join('; ')}`);
+  }
+  return result;
+}
+
 // Auto-run validation check once on load
 if (typeof window !== 'undefined') {
   validateEnv();
 }
-

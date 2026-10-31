@@ -26,9 +26,10 @@ import {
   MOCK_SUBSCRIPTION,
   MOCK_MEMBER_CHECKINS,
 } from '@/data';
-import { clearSession, getSession } from '../../portal/session';
+import { clearSession, getSession, startSession } from '../../portal/session';
 import { API_BASE, USE_MOCK } from '../../config/env';
 import { httpClient } from '../../shared/api/httpClient';
+import { tokenManager } from '../../shared/auth/tokenManager';
 
 export { API_BASE, USE_MOCK };
 
@@ -42,8 +43,6 @@ const STORAGE_KEYS = {
   ATTENDANCE: 'fitaval_attendance',
   SUBSCRIPTION: 'fitaval_subscription',
   MEMBER_CHECKINS: 'fitaval_member_checkins',
-  AUTH_USER: 'fitaval_auth_user',
-  AUTH_TOKEN: 'fitaval_auth_token',
 };
 
 // Helper for authenticated HTTP requests to Django REST Framework backend
@@ -285,167 +284,30 @@ export const client = {
   auth: {
     async me() {
       const session = getSession();
-      const token = session?.token || localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-      if (!token) {
+      if (!session) {
         throw new Error('Not authenticated');
       }
 
       if (!USE_MOCK) {
         try {
           const user = await apiRequest('/auth/me/');
-          localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+          startSession({ ...session, user });
           return user;
         } catch (e) {
-          const rawUser = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
-          if (rawUser) return JSON.parse(rawUser);
+          if (session?.user) return session.user;
           throw e;
         }
       }
 
-      initStorage();
-      const rawUser = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
-      return rawUser
-        ? JSON.parse(rawUser)
-        : { id: 'usr_admin', name: 'Gym Owner', email: 'owner@fitaval.com', role: 'owner' };
-    },
-
-    async loginViaEmailPassword(email, password) {
-      if (!USE_MOCK) {
-        const data = await apiRequest('/auth/login/', {
-          method: 'POST',
-          body: JSON.stringify({ email, password, role: 'crm' }),
-        });
-        const token = data.access_token || data.token;
-        const user = data.user || {
-          id: 'usr_' + Date.now(),
-          name: email.split('@')[0],
-          email,
-          role: 'owner',
-        };
-        localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
-        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-        return { user, token };
-      }
-
-      initStorage();
-      const user = {
-        id: 'usr_' + Date.now(),
-        name: email.split('@')[0],
-        email,
-        role: 'owner',
-      };
-      const token = 'token_' + Date.now();
-      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-      return { user, token };
-    },
-
-    async register({ email, password, gym_name, phone, full_name }) {
-      if (!USE_MOCK) {
-        return await apiRequest('/auth/register/', {
-          method: 'POST',
-          body: JSON.stringify({
-            email,
-            password,
-            gym_name,
-            phone,
-            full_name,
-            role: 'crm',
-          }),
-        });
-      }
-
-      initStorage();
-      const user = {
-        id: 'usr_' + Date.now(),
-        name: full_name || email.split('@')[0],
-        email,
-        role: 'owner',
-      };
-      localStorage.setItem('fitaval_pending_reg', JSON.stringify({ user, password }));
-      return { success: true, message: 'OTP sent' };
-    },
-
-    async verifyOtp({ email, otpCode }) {
-      if (!USE_MOCK) {
-        const data = await apiRequest('/auth/verify-otp/', {
-          method: 'POST',
-          body: JSON.stringify({ email, otp: otpCode }),
-        });
-        const token = data.access_token || data.token;
-        const user = data.user || { email, role: 'owner' };
-        localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
-        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-        return { access_token: token, user };
-      }
-
-      initStorage();
-      let user = {
-        id: 'usr_' + Date.now(),
-        name: email.split('@')[0],
-        email,
-        role: 'owner',
-      };
-      const pending = localStorage.getItem('fitaval_pending_reg');
-      if (pending) {
-        try {
-          user = JSON.parse(pending).user;
-        } catch {
-          // ignore
-        }
-      }
-      const token = 'token_' + Date.now();
-      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-      localStorage.removeItem('fitaval_pending_reg');
-      return { access_token: token, user };
-    },
-
-    async resendOtp(email) {
-      if (!USE_MOCK) {
-        return await apiRequest('/auth/resend-otp/', {
-          method: 'POST',
-          body: JSON.stringify({ email }),
-        });
-      }
-      return { success: true };
+      return session?.user || { id: 'usr_admin', name: session.name || 'Gym Owner', email: session.email || 'owner@fitaval.com', role: 'owner' };
     },
 
     setToken(token) {
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      tokenManager.setAccessToken(token);
     },
 
-    async resetPasswordRequest(email) {
-      if (!USE_MOCK) {
-        return await apiRequest('/auth/reset-password-request/', {
-          method: 'POST',
-          body: JSON.stringify({ email }),
-        });
-      }
-      return { success: true };
-    },
-
-    async resetPassword({ resetToken, newPassword }) {
-      if (!USE_MOCK) {
-        return await apiRequest('/auth/reset-password-confirm/', {
-          method: 'POST',
-          body: JSON.stringify({ token: resetToken, password: newPassword }),
-        });
-      }
-      return { success: true };
-    },
-
-    loginWithProvider(provider, returnTo = '/') {
-      const user = {
-        id: 'usr_google_' + Date.now(),
-        name: 'Fitaval User',
-        email: 'user@fitaval.com',
-        role: 'owner',
-      };
-      const token = 'token_google_' + Date.now();
-      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-      window.location.href = returnTo;
+    getAuthToken() {
+      return tokenManager.getAccessToken();
     },
 
     logout(redirectUrl) {
@@ -453,20 +315,20 @@ export const client = {
         apiRequest('/auth/logout/', { method: 'POST' }).catch(() => {});
       }
       clearSession();
-      localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
-      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-      if (redirectUrl) {
+      if (redirectUrl && typeof window !== 'undefined') {
         window.location.href = redirectUrl;
       }
     },
 
     redirectToLogin(returnUrl) {
       const target = returnUrl ? `/login?returnTo=${encodeURIComponent(returnUrl)}` : '/login';
-      window.location.href = target;
+      if (typeof window !== 'undefined') {
+        window.location.href = target;
+      }
     },
 
     isAuthenticated() {
-      return Boolean(localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) || getSession()?.token);
+      return Boolean(tokenManager.getAccessToken() || getSession()?.token);
     },
   },
 

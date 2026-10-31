@@ -26,12 +26,19 @@ import { GymManagement } from './pages/gyms/GymManagement';
 import { SubscriptionPlans } from './pages/gyms/SubscriptionPlans';
 import { GymDetail } from './pages/gyms/detail/GymDetail';
 import { UserManagement } from './pages/users/UserManagement';
-import { logout } from '../portal/session';
+import { logout, getSession } from '../portal/session';
 import { seedFeed, OCCUPANCY0, SCANS_TODAY0 } from './data/feed';
 import { adminClient } from './api/client';
 
 export default function AdminApp() {
   const { theme, dark, toggleTheme } = useAdminTheme();
+
+  useEffect(() => {
+    const session = getSession();
+    if (!session || session.role !== 'admin') {
+      window.location.assign('/login?returnTo=/admin');
+    }
+  }, []);
   const [section, setSection] = useState('dashboard');
   const [role, setRole] = useState('super');
   const [branch, setBranch] = useState('all');

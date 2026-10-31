@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { client } from '@/api/client';
-import { appParams } from '@/lib/app-params';
 import { getSession } from '../../portal/session';
 
 const AuthContext = createContext();
@@ -8,12 +7,10 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const getInitialUser = () => {
     try {
-      const raw = localStorage.getItem('fitaval_auth_user');
-      if (raw) return JSON.parse(raw);
       const session = getSession();
       if (session?.role === 'crm') {
-        return {
-          id: 'usr_owner',
+        return session.user || {
+          id: session.id || 'usr_owner',
           name: session.name || 'Gym Owner',
           email: session.email || 'owner@fitaval.com',
           role: 'owner',

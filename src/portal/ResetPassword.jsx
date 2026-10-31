@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import AuthShell, { PasswordField } from './AuthShell';
+import { USE_MOCK } from '../config/env';
+import { httpClient } from '../shared/api/httpClient';
 
 export default function ResetPassword() {
   const token = new URLSearchParams(window.location.search).get('token');
@@ -16,11 +18,31 @@ export default function ResetPassword() {
     );
   }
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (pw.length < 6) return setError('Password must be at least 6 characters.');
     if (pw !== confirm) return setError('Passwords do not match.');
     setLoading(true);
+    setError('');
+
+    if (!USE_MOCK) {
+      try {
+        await httpClient.post(
+          '/auth/password/reset/confirm/',
+          { token, password: pw },
+          { skipAuth: true, retryOn401: false }
+        );
+        window.history.pushState(null, '', '/login?reset=success');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      } catch (err) {
+        setError(err.message || 'Failed to reset password. The link may have expired.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Mock mode
     setTimeout(() => {
       window.history.pushState(null, '', '/login');
       window.dispatchEvent(new PopStateEvent('popstate'));
