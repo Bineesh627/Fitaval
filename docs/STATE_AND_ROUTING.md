@@ -6,11 +6,13 @@
 
 ## 1. Top-Level Routing & Role Gateway Flowchart
 
-Fitaval implements an intelligent front door (`src/portal/Portal.jsx`) where one unified authentication boundary serves two independent applications.
+Fitaval implements an intelligent front door (`src/portal/Portal.jsx`) where one unified authentication boundary serves two independent applications. Startup verification validates the environment, followed by role-based routing and reactive session listening.
 
 ```mermaid
 flowchart TD
-    A["User Navigates to Fitaval (e.g. / or /admin)"] --> B{"Session exists in sessionStorage?"}
+    A["Application Boot (src/portal/Portal.jsx)"] --> ENV{"IS_PROD && !validateEnv().valid?"}
+    ENV -- Yes --> ERR["Halt & Render ConfigErrorScreen (Fail-Fast)"]
+    ENV -- No --> B{"Session exists in tokenManager / sessionStorage?"}
     
     B -- No --> C{"Is current URL an auth page?<br>(/login, /register, /forgot-password, /reset-password)"}
     C -- Yes --> D["Render Shared Auth Shell (src/portal)"]
@@ -26,9 +28,13 @@ flowchart TD
     J -- No --> K["Redirect to /admin (Admin Root)"]
     J -- Yes --> L["Load Admin App (src/admin/entry.jsx) via React.lazy"]
 
-    D --> M["User Submits Credentials"]
-    M --> N["Session saved in sessionStorage"]
-    N --> O["Full window reload (Clean style isolation)"]
+    D --> M["User Submits Credentials (login / signUp)"]
+    M --> N["Access token saved in memory, session in sessionStorage"]
+    N --> O["Redirect to designated application (role-based)"]
+
+    I --> SUB["Subscribed to tokenManager.onAuthChange"]
+    L --> SUB
+    SUB -- "401 Expired or Logout" --> E
 ```
 
 ---
@@ -41,14 +47,14 @@ flowchart TD
 |---|---|---|
 | `/login` | `Login.jsx` | Shared login form supporting both Gym Owners and Super Admins |
 | `/register` | `Register.jsx` | Gym owner self-onboarding flow with 6-digit verification code |
-| `/forgot-password` | `ForgotPassword.jsx` | Password reset request with email dispatch |
+| `/forgot-password` | `ForgotPassword.jsx` | Password reset request with backend email dispatch |
 | `/reset-password` | `ResetPassword.jsx` | Token-validated password change form |
 
 ---
 
 ### 2.2 CRM Client Routes (`src/crm/App.jsx`)
 
-Driven by `react-router-dom` (v6) wrapped in `Layout.jsx` with responsive sidebar and bottom navigation:
+Driven by `react-router-dom` (v6) wrapped in `Layout.jsx` with responsive sidebar and bottom navigation. Protected by route guards redirecting unauthenticated requests to `/login`:
 
 ```mermaid
 flowchart LR
@@ -80,7 +86,7 @@ flowchart LR
 
 ### 2.3 Super Admin Section Navigation (`src/admin/AdminApp.jsx`)
 
-The Admin Panel operates on a fast in-app section switcher with deep-linking capability via browser history:
+The Admin Panel operates on a fast in-app section switcher with deep-linking capability via browser history and session verification:
 
 ```mermaid
 flowchart TD
@@ -105,15 +111,23 @@ flowchart TD
 ## 3. State Management & Context Providers
 
 Fitaval separates state into four clear layers:
-1. **Application Session State** (`src/portal/session.js`)
+1. **Application Session & In-Memory Token Manager** (`src/shared/auth/tokenManager.js` & `src/portal/session.js`)
 2. **CRM Authentication & User Context** (`src/crm/lib/AuthContext.jsx`)
 3. **Super Admin Platform Context** (`src/admin/context/AppContext.js`)
 4. **Server Entity Cache** (`@tanstack/react-query`)
 
 ```mermaid
 graph TD
-    subgraph Browser Storage
-        SS["sessionStorage (Session & Auth Token)"]
+    subgraph Secure Storage Architecture
+        MEM["Runtime Memory (Access Token - XSS Proof)"]
+        SS["sessionStorage (Session Metadata & Role, Tab-Scoped)"]
+        LS["localStorage (Refresh Token for Session Rotation)"]
+    end
+
+    subgraph Central Networking Layer
+        HTTP["httpClient (src/shared/api/httpClient.js)"]
+        MEM --> HTTP
+        LS --> HTTP
     end
 
     subgraph CRM State Architecture
@@ -122,6 +136,7 @@ graph TD
         TC["ThemeProvider (Light / Dark)"]
         
         SS --> AC
+        HTTP --> QC
         AC --> QC
         QC --> CRM_UI["CRM Pages & Components"]
     end
@@ -135,37 +150,6 @@ graph TD
         ADMIN_CTX --> ADM_UI["Admin Pages, Drawers & Modals"]
     end
 ```
-
----
-
-### 3.1 CRM State Layer (`AuthContext` & `react-query`)
-
-* **`AuthContext`:**
-  - Manages authenticated gym identity (`gym_id`, `role`, `user`).
-  - Provides `isLoadingAuth`, `user`, `logout()`, `navigateToLogin()`.
-* **`react-query`:**
-  - Provides query cache for members, plans, attendance, and transactions.
-  - Automated cache invalidation on mutations (e.g. creating a member invalidates `['members']`).
-
----
-
-### 3.2 Super Admin Reactive State Store (`AppCtx`)
-
-The Super Admin state container is created in `src/admin/AdminApp.jsx` and provided via `AppCtx`:
-
-| State Field | Type | Purpose | Mutator / Actions |
-|---|---|---|---|
-| `gyms` | `Record<string, Gym>` | Map of all gyms keyed by gym ID | `updateGym(id, patch)` |
-| `gymId` | `string` | Currently selected gym in Detail view | `openGym(id)` |
-| `members` | `Array<Member>` | All members across all platform branches | `updateMember(id, patch)` |
-| `approvals` | `Array<Approval>` | Gym onboarding requests | `setApprovals(updater)` |
-| `audit` | `Array<AuditLog>` | Platform immutable audit log entries | `addAudit(action, model, obj, before, after)` |
-| `alerts` | `Array<Alert>` | Operational floor alerts | `setAlerts(updater)` |
-| `broadcasts` | `Array<Broadcast>`| FCM mobile push notification history | `setBroadcasts(updater)` |
-| `toasts` | `Array<Toast>` | Active stack of interactive toast alerts | `toast(t)`, `dismiss(id)`, `updateToast()` |
-| `role` | `string` | Role switcher (`super`, `manager`, `desk`, `trainer`)| `setRole(newRole)` |
-| `perms` | `Object` | Permission flags derived via `permsFor(role)` | Evaluated dynamically |
-| `branch` | `string` | Active branch filter (`all`, `kochi`, `bangalore`)| `setBranch(b)` |
 
 ---
 
@@ -216,4 +200,3 @@ sequenceDiagram
         Scanner-->>Member: Screen displays Invalid QR Code
     end
 ```
-

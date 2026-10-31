@@ -29,8 +29,8 @@
 
 ## 1. Authentication
 
-### `POST /auth/login`
-Authenticate a gym staff member and receive a JWT access token.
+### `POST /auth/login/`
+Authenticate a gym staff member and receive JWT access and refresh tokens.
 
 **Request Body:**
 ```json
@@ -61,26 +61,120 @@ Authenticate a gym staff member and receive a JWT access token.
 
 ---
 
-### `POST /auth/refresh`
-Get a new access token using a refresh token.
+### `POST /auth/register/`
+Gym owner registration to request an onboarding verification OTP.
 
 **Request Body:**
 ```json
-{ "refresh_token": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..." }
+{
+  "email": "owner@mygym.com",
+  "password": "secure_password",
+  "gym_name": "Olympus Fitness",
+  "full_name": "Anand Menon",
+  "role": "crm"
+}
+```
+
+**Response `201 Created` / `200 OK`:**
+```json
+{
+  "status": "pending_verification",
+  "message": "6-digit OTP dispatched to email."
+}
+```
+
+---
+
+### `POST /auth/verify-otp/`
+Verify email onboarding code and establish the gym owner's session.
+
+**Request Body:**
+```json
+{
+  "email": "owner@mygym.com",
+  "otp": "492019"
+}
 ```
 
 **Response `200 OK`:**
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "expires_in": 3600
+  "refresh_token": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4...",
+  "user": {
+    "id": "usr_01",
+    "name": "Anand Menon",
+    "email": "owner@mygym.com",
+    "role": "crm"
+  }
 }
 ```
 
 ---
 
-### `POST /auth/logout`
-Invalidate the current access token.
+### `POST /auth/token/refresh/`
+Standard DRF SimpleJWT token refresh rotation endpoint. Handled automatically by `httpClient.js` on 401 Unauthorized.
+
+**Request Body:**
+```json
+{
+  "refresh": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..."
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..."
+}
+```
+
+---
+
+### `POST /auth/password/reset/`
+Trigger a password reset email for an existing gym account.
+
+**Request Body:**
+```json
+{
+  "email": "owner@mygym.com"
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "status": "success",
+  "message": "Password reset instructions sent."
+}
+```
+
+---
+
+### `POST /auth/password/reset/confirm/`
+Confirm password update with the reset token.
+
+**Request Body:**
+```json
+{
+  "token": "reset_token_from_email",
+  "password": "new_secure_password"
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "status": "success",
+  "message": "Password successfully updated."
+}
+```
+
+---
+
+### `POST /auth/logout/`
+Invalidate the current access and refresh tokens.
 
 **Headers:** `Authorization: Bearer <token>`
 

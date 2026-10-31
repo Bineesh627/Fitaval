@@ -30,7 +30,7 @@
 
 ## 1. Authentication
 
-### `POST /auth/login`
+### `POST /auth/login/`
 Authenticate and receive a JWT access token with Super Admin scope.
 
 **Request Body:**
@@ -69,18 +69,30 @@ Authenticate and receive a JWT access token with Super Admin scope.
 
 ---
 
-### `POST /auth/refresh`
-Refresh an expired access token.
+### `POST /auth/token/refresh/`
+Refresh an expired access token using DRF SimpleJWT token rotation. Used automatically by `httpClient.js` on HTTP 401.
 
 **Request Body:**
 ```json
-{ "refresh_token": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..." }
+{
+  "refresh": "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..."
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
 ```
 
 ---
 
-### `POST /auth/logout`
-Invalidate the current session.
+### `POST /auth/logout/`
+Invalidate the current session and tokens.
+
+**Headers:** `Authorization: Bearer <token>`
 
 **Response `204 No Content`**
 
