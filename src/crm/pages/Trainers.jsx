@@ -55,9 +55,9 @@ import { SPECIALIZATION_OPTIONS, STAFF_ROLE_FILTERS, STAFF_PAGE_TABS } from "@/d
 
 export default function Trainers() {
   const { toast } = useToast();
-  const [trainers, setTrainers] = useState([]);
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [trainers, setTrainers] = useState(() => client.entities.Trainer.listSync?.("-created_date", 100) || []);
+  const [members, setMembers] = useState(() => client.entities.Member.listSync?.("-created_date", 500) || []);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
   // Mobile Bottom Action Sheet for "⋮"
@@ -101,7 +101,7 @@ export default function Trainers() {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      if (trainers.length === 0) setLoading(true);
       const [t, m] = await Promise.all([
         client.entities.Trainer.list("-created_date", 100),
         client.entities.Member.list("-created_date", 500),
@@ -387,7 +387,7 @@ export default function Trainers() {
     }
   };
 
-  if (loading) {
+  if (loading && trainers.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />

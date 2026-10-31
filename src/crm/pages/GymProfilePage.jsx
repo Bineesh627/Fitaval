@@ -40,9 +40,10 @@ export { SERVICE_AMENITIES, FACILITY_AMENITIES, COMMON_AMENITIES, isServiceAmeni
 
 export default function GymProfilePage() {
   const { toast } = useToast();
-  const [profile, setProfile] = useState(null);
+  const initialProfile = (() => client.entities.GymProfile.listSync?.("-created_date", 10)?.[0] || null)();
+  const [profile, setProfile] = useState(initialProfile);
   const verified = useVerified(CRM_GYM_ID);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -68,25 +69,25 @@ export default function GymProfilePage() {
     setExpandedSection((prev) => ({ ...prev, [sec]: !prev[sec] }));
   };
 
-  const [form, setForm] = useState({
-    name: "",
-    logo_url: "",
-    address: "",
-    city: "",
-    latitude: 28.4815,
-    longitude: 77.0818,
-    phone: "",
-    email: "",
-    operating_hours: "",
-    weekly_schedule: DEFAULT_WEEK_SCHEDULE,
-    description: "",
-    amenities: [],
-    gallery: [],
-  });
+  const [form, setForm] = useState(() => ({
+    name: initialProfile?.name || "",
+    logo_url: initialProfile?.logo_url || "",
+    address: initialProfile?.address || "",
+    city: initialProfile?.city || "",
+    latitude: initialProfile?.latitude || 28.4815,
+    longitude: initialProfile?.longitude || 77.0818,
+    phone: initialProfile?.phone || "",
+    email: initialProfile?.email || "",
+    operating_hours: initialProfile?.operating_hours || "",
+    weekly_schedule: initialProfile?.weekly_schedule || DEFAULT_WEEK_SCHEDULE,
+    description: initialProfile?.description || "",
+    amenities: initialProfile?.amenities || [],
+    gallery: initialProfile?.gallery || [],
+  }));
 
   const loadProfile = async () => {
     try {
-      setLoading(true);
+      if (!profile) setLoading(true);
       const list = await client.entities.GymProfile.list("-created_date", 10);
       if (list.length > 0) {
         const item = list[0];
@@ -219,7 +220,7 @@ export default function GymProfilePage() {
     }
   };
 
-  if (loading) {
+  if (loading && !profile) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />

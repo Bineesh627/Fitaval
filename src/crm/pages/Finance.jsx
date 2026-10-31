@@ -32,9 +32,9 @@ export const formatPaymentMethod = (method) => {
 
 export default function Finance() {
   const { toast } = useToast();
-  const [transactions, setTransactions] = useState([]);
-  const [trainers, setTrainers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState(() => client.entities.Transaction.listSync?.("-date", 500) || []);
+  const [trainers, setTrainers] = useState(() => client.entities.Trainer.listSync?.("-created_date", 100) || []);
+  const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("all");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -207,7 +207,7 @@ export default function Finance() {
     }
   };
 
-  if (loading) {
+  if (loading && transactions.length === 0) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />

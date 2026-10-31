@@ -62,10 +62,10 @@ import {
 
 export default function Members() {
   const { toast } = useToast();
-  const [members, setMembers] = useState([]);
-  const [plans, setPlans] = useState([]);
-  const [trainers, setTrainers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState(() => client.entities.Member.listSync?.("-created_date", 500) || []);
+  const [plans, setPlans] = useState(() => client.entities.MembershipPlan.listSync?.("-created_date", 100) || []);
+  const [trainers, setTrainers] = useState(() => client.entities.Trainer.listSync?.("-created_date", 100) || []);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
@@ -106,7 +106,7 @@ export default function Members() {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      if (members.length === 0) setLoading(true);
       const [m, p, t] = await Promise.all([
         client.entities.Member.list("-created_date", 500),
         client.entities.MembershipPlan.list("-created_date", 100),
@@ -419,7 +419,7 @@ export default function Members() {
     return Math.floor(differenceInDays(new Date(), d) / 365.25);
   };
 
-  if (loading) {
+  if (loading && members.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />

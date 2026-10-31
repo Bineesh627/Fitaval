@@ -169,6 +169,31 @@ function createEntityStore(endpoint, storageKey) {
   };
 
   return {
+    listSync(sortField, limit = 100) {
+      if (!USE_MOCK) return [];
+      initStorage();
+      let items = [...getItems()];
+      if (sortField) {
+        const isDesc = sortField.startsWith('-');
+        const field = isDesc ? sortField.substring(1) : sortField;
+        items.sort((a, b) => {
+          const valA = a[field] ?? '';
+          const valB = b[field] ?? '';
+          if (valA < valB) return isDesc ? 1 : -1;
+          if (valA > valB) return isDesc ? -1 : 1;
+          return 0;
+        });
+      }
+      return items.slice(0, limit);
+    },
+
+    getSync(id) {
+      if (!USE_MOCK) return null;
+      initStorage();
+      const items = getItems();
+      return items.find((i) => i.id === id) || null;
+    },
+
     async list(sortField, limit = 100) {
       if (!USE_MOCK) {
         const params = new URLSearchParams();

@@ -1,17 +1,48 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { client } from '@/api/client';
 import { appParams } from '@/lib/app-params';
+import { getSession } from '../../portal/session';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-  const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(true);
+  const getInitialUser = () => {
+    try {
+      const raw = localStorage.getItem('fitaval_auth_user');
+      if (raw) return JSON.parse(raw);
+      const session = getSession();
+      if (session?.role === 'crm') {
+        return {
+          id: 'usr_owner',
+          name: session.name || 'Gym Owner',
+          email: session.email || 'owner@fitaval.com',
+          role: 'owner',
+        };
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  };
+
+  const initialUser = getInitialUser();
+  const [user, setUser] = useState(initialUser);
+  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(initialUser));
+  const [isLoadingAuth, setIsLoadingAuth] = useState(!initialUser && !client.isMock);
+  const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(!client.isMock);
   const [authError, setAuthError] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [appPublicSettings, setAppPublicSettings] = useState(null);
+  const [authChecked, setAuthChecked] = useState(Boolean(initialUser));
+  const [appPublicSettings, setAppPublicSettings] = useState(
+    client.isMock
+      ? {
+          id: 'fitaval-crm',
+          public_settings: {
+            app_name: 'Fitaval Gym Manager',
+            auth_mode: 'public',
+          },
+        }
+      : null
+  );
 
   useEffect(() => {
     checkAppState();
@@ -19,7 +50,9 @@ export const AuthProvider = ({ children }) => {
 
   const checkAppState = async () => {
     try {
-      setIsLoadingPublicSettings(true);
+      if (!client.isMock) {
+        setIsLoadingPublicSettings(true);
+      }
       setAuthError(null);
 
       const publicSettings = await client.app.getPublicSettings();
@@ -36,7 +69,9 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserAuth = async () => {
     try {
-      setIsLoadingAuth(true);
+      if (!client.isMock && !initialUser) {
+        setIsLoadingAuth(true);
+      }
       const currentUser = await client.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);

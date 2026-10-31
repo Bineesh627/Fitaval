@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
 export default function Wallet() {
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState(() => client.entities.WalletTransaction.listSync?.("-date", 100) || []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -33,7 +33,7 @@ export default function Wallet() {
   const totalEarnings = useMemo(() => transactions.filter((t) => t.type === "credit").reduce((s, t) => s + (t.amount || 0), 0), [transactions]);
   const totalWithdrawn = useMemo(() => transactions.filter((t) => t.type === "withdrawal").reduce((s, t) => s + (t.amount || 0), 0), [transactions]);
 
-  if (loading) {
+  if (loading && transactions.length === 0) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />

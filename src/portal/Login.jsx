@@ -13,11 +13,16 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    const res = login(email, password);
-    if (!res.ok) return setError(res.error);
+    setLoading(true);
+    const res = await login(email, password);
+    if (!res.ok) {
+      setLoading(false);
+      return setError(res.error);
+    }
     window.location.assign(safeReturnTo(res.role) || homePath(res.role));
   };
 
@@ -36,7 +41,9 @@ export default function Login() {
           onChange={(e) => { setPassword(e.target.value); setError(''); }} />
 
         {error && <p className="pt-error" role="alert">{error}</p>}
-        <button className="pt-submit" type="submit">Sign in</button>
+        <button className="pt-submit" type="submit" disabled={loading}>
+          {loading ? 'Signing in...' : 'Sign in'}
+        </button>
       </form>
     </AuthShell>
   );

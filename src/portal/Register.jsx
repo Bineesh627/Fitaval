@@ -12,23 +12,30 @@ export default function Register() {
   const [step, setStep] = useState('form'); // form | otp
   const [error, setError] = useState('');
   const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!gymName.trim()) return setError('Enter your gym / fitness club name.');
     if (!ownerName.trim()) return setError('Enter your full name.');
     if (password !== confirm) return setError('Passwords do not match.');
-    const res = signUp(email, password, { gymName: gymName.trim(), ownerName: ownerName.trim() });
+    setLoading(true);
+    const res = await signUp(email, password, { gymName: gymName.trim(), ownerName: ownerName.trim() });
+    setLoading(false);
     if (!res.ok) return setError(res.error);
     setEmail(res.email);
     setError('');
     setStep('otp');
   };
 
-  const verify = (e) => {
+  const verify = async (e) => {
     e.preventDefault();
-    const res = verifySignUp(code);
-    if (!res.ok) return setError(res.error);
+    setLoading(true);
+    const res = await verifySignUp(code);
+    if (!res.ok) {
+      setLoading(false);
+      return setError(res.error);
+    }
     window.location.assign('/');
   };
 
@@ -59,8 +66,8 @@ export default function Register() {
           <p className="pt-hint">Demo: enter any 6 digits to verify.</p>
           {error && <p className="pt-error" role="alert">{error}</p>}
           {note && <p className="pt-ok" role="status">{note}</p>}
-          <button className="pt-submit" type="submit" disabled={code.length < 6}>
-            Verify and Open CRM
+          <button className="pt-submit" type="submit" disabled={code.length < 6 || loading}>
+            {loading ? 'Verifying...' : 'Verify and Open CRM'}
           </button>
           <p className="pt-foot">
             Didn't get it?{' '}
@@ -149,8 +156,8 @@ export default function Register() {
         />
 
         {error && <p className="pt-error" role="alert">{error}</p>}
-        <button className="pt-submit" type="submit">
-          Create Gym Owner Account
+        <button className="pt-submit" type="submit" disabled={loading}>
+          {loading ? 'Creating account...' : 'Create Gym Owner Account'}
         </button>
       </form>
     </AuthShell>

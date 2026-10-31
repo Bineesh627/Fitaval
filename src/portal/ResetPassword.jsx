@@ -6,6 +6,7 @@ export default function ResetPassword() {
   const [pw, setPw] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   if (!token) {
     return (
@@ -19,7 +20,11 @@ export default function ResetPassword() {
     e.preventDefault();
     if (pw.length < 6) return setError('Password must be at least 6 characters.');
     if (pw !== confirm) return setError('Passwords do not match.');
-    window.location.assign('/login');
+    setLoading(true);
+    setTimeout(() => {
+      window.history.pushState(null, '', '/login');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }, 150);
   };
 
   return (
@@ -30,7 +35,9 @@ export default function ResetPassword() {
         <PasswordField id="pt-confirm" label="Confirm password" autoComplete="new-password" placeholder="Re-enter your password" value={confirm}
           onChange={(e) => { setConfirm(e.target.value); setError(''); }} />
         {error && <p className="pt-error" role="alert">{error}</p>}
-        <button className="pt-submit" type="submit">Reset password</button>
+        <button className="pt-submit" type="submit" disabled={loading}>
+          {loading ? 'Resetting password...' : 'Reset password'}
+        </button>
       </form>
     </AuthShell>
   );

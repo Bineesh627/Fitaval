@@ -175,9 +175,9 @@ export function PlanStatusRadioToggle({
 
 export default function Plans() {
   const { toast } = useToast();
-  const [plans, setPlans] = useState([]);
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [plans, setPlans] = useState(() => client.entities.MembershipPlan.listSync?.("-created_date", 100) || []);
+  const [members, setMembers] = useState(() => client.entities.Member.listSync?.("-created_date", 500) || []);
+  const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all"); // 'all' | 'on' | 'off'
 
   // Mobile Bottom Action Sheet for "⋮"
@@ -210,7 +210,7 @@ export default function Plans() {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      if (plans.length === 0) setLoading(true);
       const [p, m] = await Promise.all([
         client.entities.MembershipPlan.list("-created_date", 100),
         client.entities.Member.list("-created_date", 500),
@@ -466,7 +466,7 @@ export default function Plans() {
     }
   };
 
-  if (loading) {
+  if (loading && plans.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />

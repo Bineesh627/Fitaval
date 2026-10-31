@@ -31,12 +31,12 @@ import { format, subDays, isAfter, isBefore, addDays } from "date-fns";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [members, setMembers] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [plans, setPlans] = useState([]);
-  const [walletTransactions, setWalletTransactions] = useState([]);
+  const [members, setMembers] = useState(() => client.entities.Member.listSync?.("-created_date", 200) || []);
+  const [transactions, setTransactions] = useState(() => client.entities.Transaction.listSync?.("-date", 200) || []);
+  const [plans, setPlans] = useState(() => client.entities.MembershipPlan.listSync?.("-created_date", 50) || []);
+  const [walletTransactions, setWalletTransactions] = useState(() => client.entities.WalletTransaction.listSync?.("-date", 100) || []);
   const [cashFlowRange, setCashFlowRange] = useState("week"); // 'week' | 'monthly' | 'yearly'
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
 
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function Dashboard() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  if (loading) {
+  if (loading && members.length === 0) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />

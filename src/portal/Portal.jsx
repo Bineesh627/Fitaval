@@ -5,57 +5,157 @@
 // Sign-in pages (/login, /register, /forgot-password, /reset-password) share one design.
 // Only the app that matches the session is downloaded, and signing in/out reloads the page,
 // so the two apps' styles never mix.
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useState, useEffect } from 'react';
 import { getSession, homePath } from './session';
+import Login from './Login';
+import Register from './Register';
+import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
 
 const AUTH_PAGES = {
-  '/login': lazy(() => import('./Login')),
-  '/register': lazy(() => import('./Register')),
-  '/forgot-password': lazy(() => import('./ForgotPassword')),
-  '/reset-password': lazy(() => import('./ResetPassword')),
+  '/login': Login,
+  '/register': Register,
+  '/forgot-password': ForgotPassword,
+  '/reset-password': ResetPassword,
 };
+
 const CrmApp = lazy(() => import('../crm/entry'));
 const AdminApp = lazy(() => import('../admin/entry'));
 
-const Spinner = () => (
-  <div style={{ position: 'fixed', inset: 0, display: 'grid', placeItems: 'center' }}>
+export const BrandedLoader = ({ text = 'Loading Fitaval...' }) => (
+  <div
+    style={{
+      position: 'fixed',
+      inset: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#09090b',
+      color: '#fff',
+      zIndex: 99999,
+      fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    }}
+  >
     <div
       style={{
-        width: 32,
-        height: 32,
-        border: '4px solid rgba(16,185,129,.2)',
-        borderTopColor: '#10b981',
-        borderRadius: '50%',
-        animation: 'pt-spin .8s linear infinite',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 56,
+        height: 56,
+        borderRadius: 14,
+        background: '#10b981',
+        color: '#09090b',
+        boxShadow: '0 0 32px rgba(16, 185, 129, 0.45)',
+        marginBottom: 20,
       }}
-    />
-    <style>{'@keyframes pt-spin{to{transform:rotate(360deg)}}'}</style>
+    >
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11" />
+      </svg>
+    </div>
+    <div
+      style={{
+        width: 140,
+        height: 3,
+        background: 'rgba(255, 255, 255, 0.12)',
+        borderRadius: 999,
+        overflow: 'hidden',
+        position: 'relative',
+        marginBottom: 14,
+      }}
+    >
+      <div
+        style={{
+          width: '50%',
+          height: '100%',
+          background: '#10b981',
+          borderRadius: 999,
+          animation: 'pt-loader-indeterminate 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+        }}
+      />
+    </div>
+    <div style={{ fontSize: 13, color: '#a1a1aa', fontWeight: 500, letterSpacing: '0.01em' }}>
+      {text}
+    </div>
+    <style>{`
+      @keyframes pt-loader-indeterminate {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(250%); }
+      }
+    `}</style>
   </div>
 );
 
-function Redirect({ to }) {
+function Redirect({ to, text = 'Redirecting...' }) {
   useEffect(() => {
     window.location.replace(to);
   }, [to]);
-  return <Spinner />;
+  return <BrandedLoader text={text} />;
 }
 
 export default function Portal() {
-  const session = getSession();
-  const { pathname, search } = window.location;
+  const [loc, setLoc] = useState(() => ({
+    pathname: window.location.pathname,
+    search: window.location.search,
+  }));
+  const [session, setSession] = useState(() => getSession());
 
+  useEffect(() => {
+    const onLocationChange = () => {
+      setLoc({
+        pathname: window.location.pathname,
+        search: window.location.search,
+      });
+      setSession(getSession());
+    };
+    window.addEventListener('popstate', onLocationChange);
+    return () => window.removeEventListener('popstate', onLocationChange);
+  }, []);
+
+  // Idle prefetch CRM & Admin chunks so when user logs in, load is instant
+  useEffect(() => {
+    if (!session) {
+      const prefetch = () => {
+        import('../crm/entry');
+        import('../admin/entry');
+      };
+      if ('requestIdleCallback' in window) {
+        const id = window.requestIdleCallback(prefetch, { timeout: 2000 });
+        return () => window.cancelIdleCallback(id);
+      } else {
+        const t = setTimeout(prefetch, 1000);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [session]);
+
+  const { pathname, search } = loc;
   const AuthPage = AUTH_PAGES[pathname];
 
   if (!session) {
     if (!AuthPage) {
       const back = pathname + search;
-      return <Redirect to={'/login' + (back !== '/' ? '?returnTo=' + encodeURIComponent(back) : '')} />;
+      const target = '/login' + (back !== '/' ? '?returnTo=' + encodeURIComponent(back) : '');
+      // When at root '/' or another path, replace URL state in browser history and render Login immediately
+      if (pathname === '/') {
+        window.history.replaceState(null, '', target);
+        return <Login />;
+      }
+      return <Redirect to={target} text="Taking you to sign in..." />;
     }
-    return (
-      <Suspense fallback={<Spinner />}>
-        <AuthPage />
-      </Suspense>
-    );
+    return <AuthPage />;
   }
 
   const isAdminPath = pathname === '/admin' || pathname.startsWith('/admin/');
@@ -63,19 +163,19 @@ export default function Portal() {
     const back = new URLSearchParams(search).get('returnTo');
     const ok = back && back.startsWith('/') && !back.startsWith('//') && !back.includes('\\');
     const target = ok && (session.role === 'admin') === (back === '/admin' || back.startsWith('/admin/')) ? back : homePath(session.role);
-    return <Redirect to={target} />;
+    return <Redirect to={target} text="Opening your workspace..." />;
   }
   if (session.role === 'admin') {
-    if (!isAdminPath) return <Redirect to="/admin" />;
+    if (!isAdminPath) return <Redirect to="/admin" text="Opening Admin Panel..." />;
     return (
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<BrandedLoader text="Opening Admin Panel..." />}>
         <AdminApp />
       </Suspense>
     );
   }
-  if (isAdminPath) return <Redirect to="/" />;
+  if (isAdminPath) return <Redirect to="/" text="Opening CRM..." />;
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<BrandedLoader text="Opening Fitaval CRM..." />}>
       <CrmApp />
     </Suspense>
   );

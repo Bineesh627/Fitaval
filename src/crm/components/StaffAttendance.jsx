@@ -30,8 +30,8 @@ function Avatar({ person }) {
  */
 export default function StaffAttendance({ people }) {
   const { toast } = useToast();
-  const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [records, setRecords] = useState(() => client.entities.Attendance.listSync?.("-date", 5000) || []);
+  const [loading, setLoading] = useState(false);
   const [view, setView] = useState("daily");
   const [date, setDate] = useState(new Date());
   const [month, setMonth] = useState(startOfMonth(new Date()));
@@ -148,7 +148,7 @@ export default function StaffAttendance({ people }) {
     });
   }, [roster, records, month]);
 
-  if (loading) {
+  if (loading && records.length === 0) {
     return (
       <div className="flex justify-center py-16">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />

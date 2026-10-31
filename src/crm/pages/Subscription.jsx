@@ -60,10 +60,14 @@ function UsageMeter({ icon: Icon, label, used, limit }) {
 
 export default function Subscription() {
   const { toast } = useToast();
-  const [sub, setSub] = useState(null);
-  const [usage, setUsage] = useState({ members: 0, staff: 0 });
-  const [loading, setLoading] = useState(true);
-  const [cycle, setCycle] = useState("monthly");
+  const initialSub = (() => client.entities.Subscription.listSync?.("-created_date", 5)?.[0] || null)();
+  const [sub, setSub] = useState(initialSub);
+  const [usage, setUsage] = useState(() => ({
+    members: (client.entities.Member.listSync?.("-created_date", 2000) || []).length,
+    staff: (client.entities.Trainer.listSync?.("-created_date", 500) || []).length,
+  }));
+  const [loading, setLoading] = useState(false);
+  const [cycle, setCycle] = useState(initialSub?.billing_cycle || "monthly");
   const [checkoutPlan, setCheckoutPlan] = useState(null);
   const [payMethod, setPayMethod] = useState("upi");
   const [payLabel, setPayLabel] = useState("");
@@ -161,7 +165,7 @@ export default function Subscription() {
     setCancelOpen(false);
   };
 
-  if (loading) {
+  if (loading && !sub) {
     return (
       <div className="flex justify-center py-20">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
