@@ -11,9 +11,6 @@
 const STORAGE_KEYS = {
   SESSION: 'fitaval_session',
   REFRESH_TOKEN: 'fitaval_refresh_token',
-  CRM_USER: 'fitaval_auth_user',
-  CRM_TOKEN: 'fitaval_auth_token',
-  ADMIN_TOKEN: 'fitaval_admin_token',
 };
 
 // In-memory access token cache (primary safeguard against localStorage XSS)
@@ -145,9 +142,6 @@ export const tokenManager = {
     try {
       ss()?.removeItem(STORAGE_KEYS.SESSION);
       ls()?.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-      ls()?.removeItem(STORAGE_KEYS.CRM_USER);
-      ls()?.removeItem(STORAGE_KEYS.CRM_TOKEN);
-      ls()?.removeItem(STORAGE_KEYS.ADMIN_TOKEN);
     } catch {
       /* ignore */
     }

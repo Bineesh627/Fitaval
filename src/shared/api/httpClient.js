@@ -10,7 +10,7 @@
  * - Global error event broadcaster (for toast/notification systems)
  */
 
-import { API_BASE } from '../../config/env';
+import { API_BASE, IS_PROD } from '../../config/env';
 import { tokenManager } from '../auth/tokenManager';
 
 export class ApiError extends Error {
@@ -110,6 +110,13 @@ export async function httpClient(endpoint, options = {}) {
 
   const cleanBase = API_BASE.replace(/\/+$/, '');
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  if (IS_PROD && (!cleanBase || cleanBase.includes('127.0.0.1') || cleanBase.includes('localhost'))) {
+    const configErr = new ApiError('Production API_BASE is misconfigured or pointing to localhost', 500);
+    broadcastApiError(configErr);
+    throw configErr;
+  }
+
   const url = `${cleanBase}${cleanEndpoint}`;
 
   // Build headers

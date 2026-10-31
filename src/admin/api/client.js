@@ -13,7 +13,6 @@ import { AUDIT0 } from '../data/audit';
 import { ALERTS0 } from '../data/alerts';
 import { ROLES } from '../data/roles';
 import { PLANS0 } from '../data/plans';
-import { getSession } from '../../portal/session';
 import { API_BASE, USE_MOCK } from '../../config/env';
 import { httpClient } from '../../shared/api/httpClient';
 

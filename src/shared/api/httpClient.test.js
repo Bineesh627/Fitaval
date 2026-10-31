@@ -105,5 +105,27 @@ describe('httpClient', () => {
     expect(res).toEqual({ members: [] });
     expect(tokenManager.getAccessToken()).toBe('new-fresh-token');
   });
+
+  it('broadcasts errors to onApiError subscribers', async () => {
+    const errorListener = vi.fn();
+    const unsubscribe = onApiError(errorListener);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ detail: 'Internal Server Error' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(httpClient('/crm/error-endpoint')).rejects.toThrow('Internal Server Error');
+    expect(errorListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 500,
+        message: 'Internal Server Error',
+      })
+    );
+
+    unsubscribe();
+  });
 });
 
