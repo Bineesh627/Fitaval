@@ -28,16 +28,30 @@
     { q: 'Finding classes near me used to be a hassle. Now it takes a minute, and I’ve joined a weekend running group through the app.', a: 'Meera K.' }
   ];
   var idx = 1, box = document.querySelector('.testi');
-  function render() {
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // dir: +1 = next (cards glide left), -1 = previous (cards glide right), 0/undefined = no animation
+  function render(dir) {
+    var old = box.querySelectorAll('.t'),
+        off = old.length > 1 ? old[1].getBoundingClientRect().left - old[0].getBoundingClientRect().left : 0;
     var n = items.length, out = '';
     [-1, 0, 1].forEach(function (o) {
       var it = items[(idx + o + n) % n];
       out += '<figure class="t' + (o === 0 ? ' mid' : '') + '"' + (o !== 0 ? ' aria-hidden="true"' : '') + '><blockquote><p>' + it.q + '</p></blockquote><cite>' + it.a + '</cite></figure>';
     });
     box.innerHTML = out;
+    if (dir && off && !calm && box.firstChild.animate) {
+      // every card slides one slot; the centre card fades up while the old centre fades back
+      var from = dir > 0 ? [1, 0.28, 0] : [0, 0.28, 1];
+      [].forEach.call(box.children, function (el, i) {
+        el.animate(
+          [{ translate: (dir * off) + 'px 0', opacity: from[i] }, { translate: '0 0', opacity: i === 1 ? 1 : 0.28 }],
+          { duration: 700, easing: 'cubic-bezier(.22,.8,.24,1)' }
+        );
+      });
+    }
   }
-  document.querySelector('.prev').addEventListener('click', function () { idx = (idx - 1 + items.length) % items.length; render(); });
-  document.querySelector('.next').addEventListener('click', function () { idx = (idx + 1) % items.length; render(); });
+  document.querySelector('.prev').addEventListener('click', function () { idx = (idx - 1 + items.length) % items.length; render(-1); });
+  document.querySelector('.next').addEventListener('click', function () { idx = (idx + 1) % items.length; render(1); });
   render();
 
   // Registration form (client-side only, nothing is sent)
@@ -126,6 +140,49 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) { open(false); btn.focus(); } });
     document.addEventListener('click', function (e) { if (!panel.hidden && !root.contains(e.target)) open(false); });
     setBtn(); render('');
+  })();
+
+  // Custom "My Role" dropdown (the native <select> stays in the DOM as the source of truth)
+  (function () {
+    var wrap = document.querySelector('.select'); if (!wrap) return;
+    var sel = wrap.querySelector('select'), chev = wrap.querySelector('svg');
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'role-btn';
+    btn.setAttribute('aria-haspopup', 'listbox'); btn.setAttribute('aria-expanded', 'false');
+    var label = document.createElement('span'); btn.appendChild(label);
+    var panel = document.createElement('div'); panel.className = 'role-panel'; panel.hidden = true;
+    var ul = document.createElement('ul'); ul.setAttribute('role', 'listbox'); ul.setAttribute('aria-label', 'My Role'); panel.appendChild(ul);
+    wrap.insertBefore(btn, chev); wrap.insertBefore(panel, chev); wrap.classList.add('custom');
+    var opts = [].filter.call(sel.options, function (o) { return !o.disabled; });
+    ul.innerHTML = opts.map(function (o) {
+      return '<li role="option" tabindex="0" data-v="' + o.text + '"><span>' + o.text + '</span><svg class="tick" aria-hidden="true"><use href="#i-check"/></svg></li>';
+    }).join('');
+    function sync() {
+      var v = sel.value;
+      label.textContent = v || sel.options[0].text;
+      btn.classList.toggle('has-value', !!v);
+      [].forEach.call(ul.children, function (li) { li.setAttribute('aria-selected', String(li.dataset.v === v)); });
+    }
+    function open(o) {
+      panel.hidden = !o; wrap.classList.toggle('open', o); btn.setAttribute('aria-expanded', String(o));
+      if (o) { var s = ul.querySelector('[aria-selected=true]') || ul.firstChild; s.focus({ preventScroll: true }); }
+    }
+    function pick(li) {
+      if (!li || !li.dataset.v) return;
+      sel.value = li.dataset.v; sel.classList.remove('invalid'); sync(); open(false); btn.focus();
+    }
+    btn.addEventListener('click', function () { open(panel.hidden); });
+    ul.addEventListener('click', function (e) { pick(e.target.closest('li')); });
+    ul.addEventListener('keydown', function (e) {
+      var li = e.target.closest('li'); if (!li) return;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(li); }
+      if (e.key === 'ArrowDown' && li.nextElementSibling) { e.preventDefault(); li.nextElementSibling.focus(); }
+      if (e.key === 'ArrowUp' && li.previousElementSibling) { e.preventDefault(); li.previousElementSibling.focus(); }
+    });
+    btn.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown' && panel.hidden) { e.preventDefault(); open(true); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) { open(false); btn.focus(); } });
+    document.addEventListener('click', function (e) { if (!panel.hidden && !wrap.contains(e.target)) open(false); });
+    sel.form.addEventListener('reset', function () { setTimeout(sync, 0); });
+    sync();
   })();
 
   // Subscribe (local confirmation only)

@@ -1,0 +1,219 @@
+/* ==========================================================
+   Fitaval – motion layer
+   Everything is scoped under .js-anim, which is only added when
+   JS is on AND the visitor has not asked for reduced motion.
+   Uses the individual `translate` / `scale` properties so it never
+   collides with the existing `transform` rules in style.css.
+   ========================================================== */
+
+.js-anim{
+  --ease:cubic-bezier(.22,.8,.24,1);
+  --spring:cubic-bezier(.3,1.5,.5,1);
+}
+
+/* ---------- scroll progress bar ---------- */
+.scroll-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#00d66b,#8dffb8);box-shadow:0 0 12px rgba(0,230,118,.7);pointer-events:none}
+
+/* ---------- header ---------- */
+.js-anim .site-header{animation:navDrop .9s var(--ease) both}
+.js-anim .nav{transition:background .35s,box-shadow .35s,height .35s}
+.js-anim .site-header.scrolled .nav{background:rgba(0,40,20,.94);box-shadow:0 8px 30px rgba(0,0,0,.45),0 0 24px rgba(0,214,107,.2)}
+.js-anim .nav-links a{position:relative}
+.js-anim .nav-links a::after{content:"";position:absolute;left:2px;right:2px;bottom:0;height:2px;border-radius:2px;background:#2ee27a;
+  scale:0 1;transform-origin:left;transition:scale .35s var(--ease)}
+.js-anim .nav-links a:hover::after,.js-anim .nav-links a.active::after{scale:1 1}
+.js-anim .brand-mark{transition:rotate .5s var(--spring),color .3s}
+.js-anim .brand:hover .brand-mark{rotate:-12deg;color:#2ee27a}
+@keyframes navDrop{from{opacity:0;translate:0 -40px}}
+
+/* ---------- hero: load sequence ---------- */
+.js-anim .hero-panel{animation:panelIn 1.1s var(--ease) both}
+@keyframes panelIn{from{opacity:0;translate:0 30px;scale:.985}}
+
+.js-anim .hero-dots{animation:dotsDrift 14s linear infinite}
+@keyframes dotsDrift{to{background-position:14px 14px}}
+
+.js-anim .chevrons{animation:chevIn .8s .3s var(--ease) both}
+.js-anim .chevrons path{animation:chevPulse 1.8s ease-in-out infinite}
+.js-anim .chevrons path:nth-child(1){animation-delay:1.1s}
+.js-anim .chevrons path:nth-child(2){animation-delay:1.25s}
+.js-anim .chevrons path:nth-child(3){animation-delay:1.4s}
+.js-anim .chevrons path:nth-child(4){animation-delay:1.55s}
+@keyframes chevIn{from{opacity:0;translate:-30px 0}}
+@keyframes chevPulse{0%,100%{opacity:.35}35%{opacity:1}}
+
+/* headline words (spans are created by animations.js) */
+.wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+.wd>span{display:inline-block;animation:wordUp .9s var(--ease) both;animation-delay:calc(.4s + var(--i) * .09s)}
+@keyframes wordUp{from{translate:0 110%;rotate:4deg}}
+
+.js-anim .rule{transform-origin:left;animation:ruleDraw 1s .95s var(--ease) both}
+@keyframes ruleDraw{from{scale:0 1;opacity:0}}
+.js-anim .hero-copy p{animation:fadeUp .8s 1.05s var(--ease) both}
+.js-anim .hero-copy .btn{animation:fadeUp .8s 1.2s var(--ease) both}
+.js-anim .badges{animation:fadeUp .8s 1.35s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;translate:0 26px}}
+
+.js-anim .hero-img{animation:heroIn 1.3s .35s var(--ease) both,heroFloat 7s ease-in-out 1.8s infinite}
+@keyframes heroIn{from{opacity:0;translate:14% 0;scale:.96}}
+@keyframes heroFloat{0%,100%{translate:0 0}50%{translate:0 -12px}}
+
+.js-anim .trust{animation:popIn .9s 1.2s var(--spring) both,bobSm 6s ease-in-out 2.4s infinite}
+@keyframes popIn{from{opacity:0;scale:.7}}
+@keyframes bobSm{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.js-anim .trust-plane{animation:planeFly 4.5s ease-in-out 2s infinite}
+@keyframes planeFly{0%,100%{translate:0 0;rotate:0deg}50%{translate:6px -6px;rotate:-6deg}}
+.js-anim .avatars i{animation:popIn .6s var(--spring) both;animation-delay:calc(1.7s + var(--n,0) * .1s)}
+.js-anim .avatars i:nth-child(1){--n:0}.js-anim .avatars i:nth-child(2){--n:1}
+.js-anim .avatars i:nth-child(3){--n:2}.js-anim .avatars i:nth-child(4){--n:3}.js-anim .avatars i:nth-child(5){--n:4}
+.js-anim .trust-icon{animation:heartbeat 2.4s ease-in-out 2.4s infinite}
+@keyframes heartbeat{0%,100%{scale:1}8%{scale:1.14}16%{scale:1}24%{scale:1.1}32%{scale:1}}
+
+/* ---------- buttons ---------- */
+.js-anim .btn{position:relative;overflow:hidden;isolation:isolate;transition:transform .25s var(--ease),box-shadow .25s,translate .25s var(--ease)}
+.js-anim .btn::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;z-index:-1;
+  background:linear-gradient(100deg,transparent,rgba(0,214,107,.35),transparent);transform:skewX(-20deg)}
+.js-anim .btn:hover::after{animation:shine .75s var(--ease)}
+@keyframes shine{to{left:130%}}
+.js-anim .btn-arrow{transition:translate .25s var(--ease)}
+.js-anim .btn:hover .btn-arrow{translate:6px 0}
+.js-anim .btn:active{scale:.97}
+.js-anim .badge{transition:translate .25s var(--ease),border-color .25s,background .25s}
+.js-anim .badge:hover{translate:0 -4px;border-color:#fff;background:#0b0b0b}
+.js-anim .btn-green{transition:background .2s,scale .2s}
+.js-anim .btn-green:hover{scale:1.05}
+
+/* ---------- ticker ---------- */
+.js-anim .ticker:hover .ticker-track{animation-play-state:paused}
+.js-anim .ticker .sep{animation:spinSlow 6s linear infinite}
+@keyframes spinSlow{to{rotate:360deg}}
+
+/* ---------- scroll reveals ---------- */
+.js-anim [data-reveal]:not(.in){opacity:0}
+.js-anim [data-reveal].in{animation:reveal .9s var(--ease) backwards;animation-delay:var(--d,0s)}
+.js-anim [data-reveal=up]{--ty:44px}
+.js-anim [data-reveal=left]{--tx:-60px;--ty:0px}
+.js-anim [data-reveal=right]{--tx:60px;--ty:0px}
+.js-anim [data-reveal=zoom]{--ty:30px;--s:.92}
+@keyframes reveal{from{opacity:0;translate:var(--tx,0) var(--ty,44px);scale:var(--s,1)}}
+
+/* gallery: container is the trigger, images stagger in */
+.js-anim [data-reveal=group]:not(.in){opacity:1}
+.js-anim [data-reveal=group].in{animation:none}
+.js-anim [data-reveal=group]:not(.in) img{opacity:0}
+.js-anim [data-reveal=group].in img{animation:reveal .9s var(--ease) backwards;--ty:50px;--s:.9}
+.js-anim [data-reveal=group].in img:nth-child(2){animation-delay:.12s}
+.js-anim [data-reveal=group].in img:nth-child(3){animation-delay:.24s}
+.js-anim [data-reveal=group].in img:nth-child(4){animation-delay:.36s}
+
+/* section headline underline draws itself */
+.js-anim .sec-title::after{scale:0 1;transition:scale 1.1s .25s var(--ease)}
+.js-anim .sec-title.in::after{scale:1 1}
+
+/* ---------- decorative backgrounds ---------- */
+.js-anim .cta-right::before{animation:dotsDrift 16s linear infinite}
+.js-anim .wave{animation:waveShift 12s ease-in-out infinite alternate}
+.js-anim .about.dots-bg::before{animation:waveShift 12s ease-in-out infinite alternate}
+@keyframes waveShift{from{background-position:0 0}to{background-position:18px 8px}}
+
+/* ---------- floating icons ---------- */
+.js-anim .float-icon{animation:bob 4.5s ease-in-out infinite}
+.js-anim .fi-2,.js-anim .fi-4,.js-anim .fi-6{animation-delay:-2.2s;animation-direction:reverse}
+.js-anim .fi-3{animation-duration:5.2s}
+.js-anim .fi-5{animation-duration:3.9s;animation-delay:-1s}
+@keyframes bob{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -14px;rotate:6deg}}
+.js-anim .float-icon{transition:box-shadow .3s}
+.js-anim .float-icon:hover{box-shadow:0 0 34px rgba(0,230,118,.7)}
+
+/* ---------- gallery ---------- */
+.js-anim .gallery img{transition:filter .6s,translate .5s var(--ease),scale .5s var(--ease)}
+.js-anim .gallery img:hover{filter:grayscale(0) contrast(1.05) brightness(.95);translate:0 -10px;scale:1.03}
+
+/* ---------- stats ---------- */
+.js-anim .stats>div{transition:translate .3s var(--ease)}
+.js-anim .stats>div:hover{translate:0 -6px}
+.js-anim .stats strong{font-variant-numeric:tabular-nums}
+
+/* ---------- feature cards ---------- */
+.js-anim .card{transition:translate .45s var(--ease),border-color .4s,box-shadow .4s}
+.js-anim .card img{transition:scale .9s var(--ease),filter .6s}
+.js-anim .card::after{transition:opacity .5s}
+.js-anim .card:hover{translate:0 -8px;border-color:rgba(0,214,107,.7);box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 30px rgba(0,214,107,.22)}
+.js-anim .card:hover img{scale:1.09;filter:grayscale(.15) brightness(.7)}
+.js-anim .card:hover::after{opacity:.55}
+.js-anim .num{transition:rotate .5s var(--spring),background .3s,color .3s}
+.js-anim .card:hover .num{rotate:360deg;background:var(--green-2)}
+.js-anim .card h3{transition:translate .4s var(--ease)}
+.js-anim .card:hover h3{translate:6px 0}
+
+/* ---------- testimonials ---------- */
+.js-anim .t::before{transition:scale .4s var(--spring)}
+.js-anim .circ{transition:background .2s,color .2s,scale .25s var(--spring)}
+.js-anim .circ:hover{scale:1.12}
+.js-anim .circ:active{scale:.92}
+
+/* ---------- CTA + form ---------- */
+.js-anim .cta-card img{transition:filter .6s}
+.js-anim .cta-card:hover img{filter:grayscale(0) contrast(1.05)}
+.js-anim .vline,.js-anim .hline{animation:lineGlow 3s ease-in-out infinite}
+@keyframes lineGlow{0%,100%{opacity:.35}50%{opacity:1}}
+.js-anim .join input,.js-anim .join select{transition:border-color .25s,box-shadow .25s,background .25s}
+.js-anim .join input:focus,.js-anim .join select:focus{box-shadow:0 0 0 4px rgba(0,230,118,.22)}
+.js-anim .join.shake{animation:shake .45s}
+@keyframes shake{20%,60%{translate:-8px 0}40%,80%{translate:8px 0}}
+.js-anim .form-msg.ok,.js-anim .form-msg.err{animation:fadeUp .4s var(--ease) both}
+.js-anim .cc-panel:not([hidden]){animation:panelDrop .25s var(--ease)}
+@keyframes panelDrop{from{opacity:0;translate:0 -8px}}
+
+/* ---------- footer ---------- */
+.js-anim .foot-links a,.js-anim .foot-contact a{transition:color .2s,translate .25s var(--ease);display:inline-block}
+.js-anim .foot-links a:hover{translate:6px 0}
+.js-anim .soc{transition:translate .3s var(--spring),background .25s,color .25s,box-shadow .25s}
+.js-anim .soc:hover{translate:0 -5px;background:var(--green);color:#04150a;box-shadow:0 8px 20px rgba(0,214,107,.4)}
+.js-anim .legal span{transition:color .2s}
+.js-anim .legal span:hover{color:var(--green-2)}
+
+/* ===== country-code picker on desktop (matches tablet/mobile) ===== */
+@media (min-width:1025px){
+  .phone-row{display:flex;gap:10px;align-items:flex-start}
+  .phone-row>input{flex:1;min-width:0}
+  .join .cc{display:block;position:static;flex:none;background:none;padding:0;height:auto;margin:0;border-radius:0}
+  .join .cc-btn{display:flex;align-items:center;gap:8px;height:46px;padding:0 12px 0 14px;border-radius:999px;background:#050806;border:1px solid transparent;color:#fff;font:400 12px 'Poppins',sans-serif;cursor:pointer;margin:0;transition:border-color .25s,box-shadow .25s}
+  .join .cc-btn:hover{border-color:rgba(0,230,118,.5)}
+  .join .cc-btn:focus-visible,.join .cc-btn[aria-expanded=true]{border-color:var(--green-2);box-shadow:0 0 0 4px rgba(0,230,118,.22)}
+  .join .cc-btn .flag{width:22px;height:22px;flex:none}
+  .join .cc-btn svg{position:static;width:13px;height:13px;transform:none;color:#fff}
+  .join .cc-btn[aria-expanded=true] svg{rotate:180deg}
+}
+.join .cc-btn svg{transition:rotate .25s}
+
+/* ===== custom "My Role" dropdown ===== */
+.select.custom select{visibility:hidden;pointer-events:none}
+.role-btn{position:absolute;inset:0;display:flex;align-items:center;width:100%;padding:0 46px 0 22px;border-radius:999px;background:#050806;border:1px solid transparent;
+  color:#d5dad7;font:400 12px 'Poppins',sans-serif;text-align:left;cursor:pointer;transition:border-color .25s,box-shadow .25s,background .25s}
+.role-btn.has-value{color:#fff}
+.role-btn:hover{border-color:rgba(0,230,118,.5)}
+.role-btn:focus-visible,.select.open .role-btn{border-color:var(--green-2);box-shadow:0 0 0 4px rgba(0,230,118,.22);outline:0}
+.select select.invalid~.role-btn{border-color:#ff6b6b}
+.select svg{transition:transform .3s}
+.select.open>svg{transform:translateY(-50%) rotate(180deg)}
+.role-panel{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:40;background:#161a17;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:8px;
+  box-shadow:0 18px 44px rgba(0,0,0,.55);text-align:left;transform-origin:50% 0}
+.role-panel[hidden]{display:none}
+.role-panel:not([hidden]){animation:rolePop .28s cubic-bezier(.22,.8,.24,1)}
+@keyframes rolePop{from{opacity:0;translate:0 -10px;scale:.97}}
+.role-panel li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-radius:14px;cursor:pointer;font-size:13px;color:#eef3f0;transition:background .15s,padding .2s}
+.role-panel li:hover,.role-panel li:focus-visible{background:rgba(0,214,107,.16);outline:0;padding-left:20px}
+.role-panel li[aria-selected=true]{background:rgba(0,214,107,.24);color:#fff;font-weight:500}
+.role-panel li .tick{width:16px;height:16px;color:var(--green-2);opacity:0;scale:.4;transition:.25s}
+.role-panel li[aria-selected=true] .tick{opacity:1;scale:1}
+@media (max-width:1024px){
+  .role-btn{font-size:16px;padding:0 54px 0 24px}
+  .role-panel li{font-size:16px;padding:14px 18px}
+}
+@media (max-width:600px){
+  .role-btn{font-size:11px;padding:0 40px 0 14px}
+  .role-panel{border-radius:16px;top:calc(100% + 6px)}
+  .role-panel li{font-size:12px;padding:10px 12px}
+}

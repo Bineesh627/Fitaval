@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./style.css">
+<script>if(!window.matchMedia||!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim');</script>
+<link rel="stylesheet" href="./animations.css">
 </head>
 <body>
 
@@ -174,7 +176,7 @@
       <label class="sr-only" for="f-name">Name</label>
       <input id="f-name" name="name" type="text" placeholder="Name" autocomplete="name" required>
       <label class="sr-only" for="f-mobile">Mobile Number</label>
-      <div class="phone-row"><div class="cc"><button type="button" class="cc-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Country code"><span class="flag" aria-hidden="true"></span><span class="cc-code">+91</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button><div class="cc-panel" hidden><label class="cc-search"><svg aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search" aria-label="Search country" autocomplete="off"></label><ul class="cc-list" role="listbox" aria-label="Countries"></ul></div><input type="hidden" name="cc" value="+91"></div><input id="f-mobile" name="mobile" type="tel" placeholder="Mobile Number" autocomplete="tel" required></div>
+      <div class="phone-row"><div class="cc"><button type="button" class="cc-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Country code"><span class="flag" aria-hidden="true"></span><span class="cc-code">+91</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button><div class="cc-panel" hidden><label class="cc-search"><svg aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="cc-search" name="cc_search" placeholder="Search" aria-label="Search country" autocomplete="off"></label><ul class="cc-list" role="listbox" aria-label="Countries"></ul></div><input type="hidden" name="cc" value="+91"></div><input id="f-mobile" name="mobile" type="tel" placeholder="Mobile Number" autocomplete="tel" required></div>
       <label class="sr-only" for="f-email">Email</label>
       <input id="f-email" name="email" type="email" placeholder="Email" autocomplete="email" required>
       <label class="sr-only" for="f-role">My Role</label>
@@ -206,7 +208,7 @@
         <h3>Subscribe for Updates</h3>
         <div class="sub-row">
           <label class="sr-only" for="sub-email">Email</label>
-          <input id="sub-email" type="email" placeholder="Enter your email" required>
+          <input id="sub-email" name="subscribe_email" type="email" placeholder="Enter your email" autocomplete="email" required>
           <button type="submit" class="btn-green">Subscribe</button>
         </div>
         <p class="form-msg" role="status" aria-live="polite"></p>
@@ -225,5 +227,6 @@
 </footer>
 
 <script src="./script.js"></script>
+<script src="./animations.js"></script>
 </body>
 </html>
