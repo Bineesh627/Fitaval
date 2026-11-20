@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitaval – Discover Fitness. Connect with Community.</title>
+<meta name="description" content="Find fitness clubs near you, meet like-minded people, and stay motivated.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<!-- Inline SVG symbols (no external icon files) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="0 0 24 24"><circle cx="5.500" cy="3.600" r="2" fill="currentColor"/><path fill="currentColor" d="M6.200 7.300H20l-1 3H9.200l-.6 2.200h8.200l-.9 2.900H7.700L5.300 22H2z"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><g transform="rotate(-40 12 12)" fill="currentColor"><rect x="7.500" y="10.700" width="9" height="2.600" rx="1"/><rect x="4.700" y="6.500" width="3" height="11" rx="1.200"/><rect x="16.300" y="6.500" width="3" height="11" rx="1.200"/><rect x="1.800" y="8.800" width="2.400" height="6.400" rx="1"/><rect x="19.800" y="8.800" width="2.400" height="6.400" rx="1"/></g></symbol>
+  <symbol id="i-arm" viewBox="0 0 24 24"><path fill="currentColor" d="M6.500 2.800A2.800 2.800 0 019.300 5.600v3.200c1.200-.9 2.800-1.200 4.300-.7 4.200 1.400 7.400 4.300 7.400 8.300 0 2.500-1.900 4.500-4.400 4.500H8C4.800 20.900 2.500 18.400 2.500 15.200V5.600a2.800 2.800 0 014-2.800z"/><circle cx="8" cy="12.800" r="2" fill="#000" opacity=".12"/></symbol>
+  <symbol id="i-kettle" viewBox="0 0 24 24"><g fill="currentColor"><path d="M12 2.500a4 4 0 00-4 4v1.200h2.200V6.500a1.800 1.800 0 013.600 0v1.200H16V6.500a4 4 0 00-4-4z"/><circle cx="12" cy="12.500" r="5" /><rect x="1.500" y="11" width="3" height="6" rx="1"/><rect x="19.500" y="11" width="3" height="6" rx="1"/><rect x="3.500" y="13" width="17" height="2" rx="1"/></g></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><g fill="currentColor"><path fill-rule="evenodd" d="M7 3h2.500a2 2 0 014 0H16a2 2 0 012 2v6.500l-7 7V21H5a2 2 0 01-2-2V5a2 2 0 012-2zm5.500 0a.9.9 0 100 1.800.9.9 0 000-1.800zM6 8h3v3H6zm0 5h3v3H6z"/><path d="M13 17.500l6.300-6.300 2.200 2.200-6.300 6.300-3 .8z"/><rect x="10.500" y="8" width="5" height="1.600" rx=".8"/></g></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.500" stroke-linejoin="round" d="M2 3l20 9L2 21l3-9zM5 12h9"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M4 3l10 9-10 9z" fill="#34a853"/><path d="M4 3l10 9 3-3L6 2.500z" fill="#4285f4"/><path d="M4 21l10-9 3 3-11 6z" fill="#ea4335"/><path d="M17 9l4 3-4 3-3-3z" fill="#fbbc04"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.700c0-2.300 1.900-3.400 2-3.500-1.100-1.600-2.800-1.800-3.400-1.800-1.400-.1-2.800.9-3.500.9s-1.800-.8-3-.8c-1.500 0-3 .9-3.800 2.300-1.600 2.800-.4 7 1.200 9.300.8 1.100 1.700 2.400 2.900 2.300 1.200 0 1.600-.7 3-.7s1.800.7 3 .7 2-1.100 2.800-2.200c.9-1.300 1.200-2.500 1.300-2.600-.1 0-2.500-.9-2.500-3.900zM14.100 5.800c.6-.8 1.100-1.800.9-2.800-.9 0-2 .6-2.600 1.400-.6.700-1.100 1.700-.9 2.700 1 .1 2-.5 2.600-1.300z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-arrow-l" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 8L4 7.500V8l8 5.500L20 8v-.5z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.600 10.800a15 15 0 006.600 6.600l2.200-2.200a1 1 0 011-.25 11.500 11.500 0 003.600.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.500a1 1 0 011 1c0 1.250.2 2.450.57 3.600a1 1 0 01-.25 1z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7zm0 9.500A2.500 2.500 0 1112 6.500a2.500 2.500 0 010 5z"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.500" cy="6.500" r="1.200" fill="currentColor"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M14 8V6.500c0-.7.200-1 1.200-1H17V2h-2.800C11.300 2 10 3.700 10 6v2H8v3.500h2V22h4v-10.500h2.700L17 8z"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M4 9h3.500v11H4zM5.750 3.500a2 2 0 110 4 2 2 0 010-4zM10 9h3.300v1.600c.5-.9 1.700-1.900 3.500-1.900 3.600 0 4.200 2.300 4.200 5.400V20h-3.500v-5.200c0-1.300 0-2.900-1.800-2.900s-2 1.400-2 2.800V20H10z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path fill="currentColor" d="M4 21c0-4 3.500-6 8-6s8 2 8 6z"/></symbol>
+</svg>
+
+<!-- A. Header -->
+<header class="site-header" id="top">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="#home" aria-label="Fitaval home"><svg class="brand-mark"><use href="#i-mark"/></svg><span>FITAVAL</span></a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<!-- B. Hero -->
+<section class="hero" id="home">
+  <div class="hero-panel">
+    <div class="hero-dots" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <svg class="chevrons" viewBox="0 0 116 42" aria-hidden="true"><g fill="#1fd15f"><path d="M0 0h16l22 21-22 21H0l22-21z"/><path d="M26 0h16l22 21-22 21H26l22-21z" opacity=".95"/><path d="M52 0h16l22 21-22 21H52l22-21z" opacity=".9"/><path d="M78 0h16l22 21-22 21H78l22-21z" opacity=".85"/></g></svg>
+      <h1>Discover <span class="dk">Fitness</span><br>Connect with<br><span class="dk">Community.</span></h1>
+      <span class="rule" aria-hidden="true"></span>
+      <p>Find fitness clubs near you, meet like-minded people, and stay motivated.</p>
+      <a class="btn btn-white" href="#join">Register Now <span class="btn-arrow" aria-hidden="true">»</span></a>
+      <div class="badges">
+        <span class="badge"><svg><use href="#i-play"/></svg><span><small>GET IT ON</small>Google Play</span></span>
+        <span class="badge"><svg><use href="#i-apple"/></svg><span><small>Download on the</small>App Store</span></span>
+      </div>
+    </div>
+    <div class="hero-visual"><img class="hero-img" src="./assets/hero_fitness_duo.png" alt="A male and a female fitness athlete with arms crossed">
+    <div class="trust glass">
+      <svg class="trust-plane" aria-hidden="true"><use href="#i-plane"/></svg><span class="trust-icon"><svg><use href="#i-arm"/></svg></span>
+      <p>Trusted by 100+ people</p>
+      <div class="avatars" aria-hidden="true">
+        <i style="background:#c98b6b"></i><i style="background:#6b8fc9"></i><i style="background:#8fc96b"></i><i style="background:#e0613f"></i><i style="background:#777">+</i>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- C. Ticker -->
+<div class="ticker" aria-label="Fitaval highlights">
+  <div class="ticker-track">
+    <div class="ticker-group">
+      <span class="g">Discover Nearby Gyms</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="w">Train Together</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="g">Build Strength</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="w">Join the Community</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="g">Unlock Your Potential</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+    </div>
+    <div class="ticker-group" aria-hidden="true">
+      <span class="g">Discover Nearby Gyms</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="w">Train Together</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="g">Build Strength</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="w">Join the Community</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+      <span class="g">Unlock Your Potential</span><svg class="sep"><use href="#i-dumbbell"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- D. About -->
+<section class="about dots-bg" id="about">
+  <div class="container narrow">
+    <h2 class="sec-title">ABOUT <em>FITAVAL</em></h2>
+    <p class="lead">Welcome to Fitaval, where we believe fitness should be accessible, social, and inspiring. Our platform helps you discover nearby gyms, connect with a supportive community, and track your growth with ease. Fitaval isn't just about workouts; it's about building a lifestyle of health, motivation, and connection.</p>
+  </div>
+  <div class="gallery-wrap">
+    <div class="gallery">
+      <img src="./assets/about_gallery_mirror_training.jpg" alt="Athlete training in front of a gym mirror" style="object-position:50% 50%">
+      <img src="./assets/about_gallery_barbell_grip.jpg" alt="Close-up of a hand gripping a barbell">
+      <img src="./assets/about_gallery_strength_training_back.jpg" alt="Athlete seen from behind during strength training" style="object-position:40% 50%">
+      <img src="./assets/about_gallery_gym_member_weight_plate.jpg" alt="Gym member carrying a weight plate">
+    </div>
+    <span class="float-icon fi-1"><svg><use href="#i-dumbbell"/></svg></span>
+    <span class="float-icon fi-2"><svg><use href="#i-arm"/></svg></span>
+  </div>
+  <div class="container">
+    <div class="stats glass">
+      <div><strong>500+</strong><b>Happy members</b><small>Our community is growing fast!</small></div>
+      <div><strong>30+</strong><b>Weekly classes</b><small>Pick from various workouts</small></div>
+      <div><strong>100+</strong><b>Certified Trainers</b><small>Guidance at every step</small></div>
+      <div><strong>99+</strong><b>Customer Satisfaction</b><small>Ensure your progress satisfaction</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- E. Features -->
+<section class="features dots-bg" id="features">
+  <div class="container narrow">
+    <h2 class="sec-title">OUR <em>FEATURES</em></h2>
+    <p class="lead">Everything you need for your fitness journey: find gyms, connect with others, and stay motivated.</p>
+  </div>
+  <div class="container feat-grid">
+    <div class="feat-col">
+      <article class="card c1"><img src="./assets/feature_discover_clubs_group_training.jpg" alt="Group functional-training class"><div class="card-body"><span class="num">01</span><h3>Discover Clubs</h3><p>Find gyms, studios, and workout spots near you, quickly, easily, and hassle-free.</p></div></article>
+      <article class="card c3"><img src="./assets/feature_fitness_business_gym.jpg" alt="Gym members beside a dumbbell rack"><div class="card-body"><span class="num">03</span><h3>Redefining Fitness Business</h3><p>Empowering gym owners with smart tools, analytics, and AI innovation.</p></div></article>
+    </div>
+    <div class="feat-col">
+      <article class="card c2"><img src="./assets/feature_events_running.jpg" alt="Outdoor road-running event"><div class="card-body"><span class="num">02</span><h3>Events &amp; Challenges</h3><p>Take part in fitness events and challenges that keep you active.</p></div></article>
+      <article class="card c4"><img src="./assets/feature_healthy_journey_deadlift.jpg" alt="Athlete preparing for a deadlift"><div class="card-body"><span class="num">04</span><h3>Grow Your Healthy Journey</h3><p>Monitor your activity, progress, and take time to celebrate your achievements.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- F. Testimonials -->
+<section class="community" id="community">
+  <div class="wave" aria-hidden="true"></div>
+  <div class="container narrow">
+    <h2 class="sec-title t-case">Our <em>Community</em> Says</h2>
+    <p class="lead">See how Fitaval inspires and motivates our growing community.</p>
+  </div>
+  <div class="container testi-wrap">
+    <button class="circ prev" aria-label="Previous testimonial"><svg><use href="#i-arrow-l"/></svg></button>
+    <div class="testi" aria-live="polite"></div>
+    <button class="circ next" aria-label="Next testimonial"><svg><use href="#i-arrow-r"/></svg></button>
+  </div>
+</section>
+
+<!-- G. CTA + registration -->
+<section class="cta" id="contact">
+  <div class="cta-left">
+    <div class="cta-card glass"><i class="vline" aria-hidden="true"></i><i class="hline" aria-hidden="true"></i>
+      <h2>Begin your fitness journey with <em>Fitaval</em> today!</h2>
+      <img src="./assets/cta_fitness_duo_dumbbells.png" alt="Male and female athletes holding dumbbells">
+      <span class="float-icon fi-3"><svg><use href="#i-arm"/></svg></span>
+      <span class="float-icon fi-4"><svg><use href="#i-dumbbell"/></svg></span>
+    </div>
+  </div>
+  <div class="cta-right" id="join">
+    <div class="join-wrap"><span class="float-icon fi-5"><svg><use href="#i-kettle"/></svg></span><span class="float-icon fi-6"><svg><use href="#i-clip"/></svg></span>
+    <form class="join glass" novalidate>
+      <div class="brand center"><svg class="brand-mark"><use href="#i-mark"/></svg><span>FITAVAL</span></div>
+      <h2>Join <span class="dk">Fitaval</span></h2>
+      <p>Start your fitness journey with us today!</p>
+      <label class="sr-only" for="f-name">Name</label>
+      <input id="f-name" name="name" type="text" placeholder="Name" autocomplete="name" required>
+      <label class="sr-only" for="f-mobile">Mobile Number</label>
+      <div class="phone-row"><div class="cc"><i class="flag" aria-hidden="true"></i><select aria-label="Country code" name="cc"><option>+91</option><option>+1</option><option>+44</option><option>+971</option></select><svg><use href="#i-chev"/></svg></div><input id="f-mobile" name="mobile" type="tel" placeholder="Mobile Number" autocomplete="tel" required></div>
+      <label class="sr-only" for="f-email">Email</label>
+      <input id="f-email" name="email" type="email" placeholder="Email" autocomplete="email" required>
+      <label class="sr-only" for="f-role">My Role</label>
+      <div class="select"><select id="f-role" name="role" required>
+        <option value="" selected disabled>My Role</option>
+        <option>Gym Member</option><option>Trainer</option><option>Gym Owner</option><option>Other</option>
+      </select><svg><use href="#i-chev"/></svg></div>
+      <button class="btn btn-white wide" type="submit">Submit</button>
+      <p class="form-msg" role="status" aria-live="polite"></p>
+    </form></div>
+  </div>
+</section>
+</main>
+
+<!-- H. Footer -->
+<footer class="footer">
+  <div class="container">
+    <a class="brand" href="#home"><svg class="brand-mark"><use href="#i-mark"/></svg><span>FITAVAL</span></a>
+    <div class="foot-grid">
+      <ul class="foot-links">
+        <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#features">Features</a></li><li><a href="#community">Community</a></li><li><a href="#contact">Contact</a></li>
+      </ul>
+      <ul class="foot-contact">
+        <li><svg><use href="#i-mail"/></svg><a href="mailto:fitavalofficial@gmail.com">fitavalofficial@gmail.com</a></li>
+        <li><svg><use href="#i-phone"/></svg><a href="tel:+9109991777796">+91 09991 77796</a></li>
+        <li><svg><use href="#i-pin"/></svg><address>Taliparamba Techies Park at Rajagiri College of Social Science (Autonomous), Rajagiri Rd, Kalamassery, Kochi, Kerala 683104</address></li>
+      </ul>
+      <form class="subscribe" novalidate>
+        <h3>Subscribe for Updates</h3>
+        <div class="sub-row">
+          <label class="sr-only" for="sub-email">Email</label>
+          <input id="sub-email" type="email" placeholder="Enter your email" required>
+          <button type="submit" class="btn-green">Subscribe</button>
+        </div>
+        <p class="form-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+    <div class="foot-bar">
+      <div class="social">
+        <span class="soc" aria-label="Instagram" role="img"><svg><use href="#i-ig"/></svg></span>
+        <span class="soc" aria-label="Facebook" role="img"><svg><use href="#i-fb"/></svg></span>
+        <span class="soc" aria-label="LinkedIn" role="img"><svg><use href="#i-in"/></svg></span>
+      </div>
+      <p>© 2025 Fitaval. All rights reserved.</p>
+      <p class="legal"><span>Privacy Policy</span><i></i><span>Terms of Service</span></p>
+    </div>
+  </div>
+</footer>
+
+<script src="./script.js"></script>
+</body>
+</html>
