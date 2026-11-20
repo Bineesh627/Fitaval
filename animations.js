@@ -36,6 +36,7 @@
   tag('.stats', 'up');
   tag('.card', 'up', 0.14);
   tag('.testi-wrap', 'up');
+  tag('.faq details', 'up', 0.08);
   tag('.cta-card', 'left');
   tag('.join-wrap', 'right');
   tag('.foot-links, .foot-contact, .subscribe', 'up', 0.12);

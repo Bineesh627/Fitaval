@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://fitaval.com/</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/hero_fitness_duo.png</image:loc>
+      <image:title>Fitaval athletes with arms crossed</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/about_gallery_mirror_training.jpg</image:loc>
+      <image:title>Athlete training in front of a gym mirror</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/about_gallery_barbell_grip.jpg</image:loc>
+      <image:title>Close-up of a hand gripping a barbell</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/about_gallery_strength_training_back.jpg</image:loc>
+      <image:title>Athlete during strength training</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/about_gallery_gym_member_weight_plate.jpg</image:loc>
+      <image:title>Gym member carrying a weight plate</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/feature_discover_clubs_group_training.jpg</image:loc>
+      <image:title>Group functional-training class</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/feature_events_running.jpg</image:loc>
+      <image:title>Outdoor road-running event</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/feature_fitness_business_gym.jpg</image:loc>
+      <image:title>Gym members beside a dumbbell rack</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/feature_healthy_journey_deadlift.jpg</image:loc>
+      <image:title>Athlete preparing for a deadlift</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://fitaval.com/assets/cta_fitness_duo_dumbbells.png</image:loc>
+      <image:title>Athletes holding dumbbells</image:title>
+    </image:image>
+  </url>
+</urlset>

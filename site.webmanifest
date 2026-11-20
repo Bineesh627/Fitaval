@@ -1,0 +1,24 @@
+{
+  "name": "Fitaval",
+  "short_name": "Fitaval",
+  "description": "Fitaval helps you find fitness clubs and gyms near you, join events and challenges, meet like-minded people and track your progress. Based in Kochi, Kerala, India.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0a8a40",
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -515,3 +515,19 @@ body{background:var(--bg)}
   .features.dots-bg::before{width:40%;height:180px;background-size:9px 9px}
 }
 .about.dots-bg::before,.wave{-webkit-mask-image:linear-gradient(180deg,#000 62%,transparent 100%);mask-image:linear-gradient(180deg,#000 62%,transparent 100%)}
+
+/* ===== FAQ ===== */
+.faq{padding:40px 0 110px}
+.faq-list{margin-top:44px;display:grid;gap:12px}
+.faq details{border:1px solid rgba(0,214,107,.22);border-radius:18px;background:rgba(255,255,255,.03);transition:border-color .3s,background .3s}
+.faq details:hover{border-color:rgba(0,214,107,.5)}
+.faq details[open]{border-color:var(--green);background:rgba(0,214,107,.07)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 26px;font-weight:500;font-size:clamp(15px,1.4vw,18px);border-radius:18px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:12px;height:12px;border-right:2px solid var(--green-2);border-bottom:2px solid var(--green-2);rotate:45deg;translate:0 -3px;transition:rotate .3s,translate .3s}
+.faq details[open] summary::after{rotate:225deg;translate:0 3px}
+.faq .ans{padding:0 26px 22px;max-width:70ch}
+.faq .ans p{color:#d5dad7;font-size:15px;line-height:1.7}
+.faq details[open] .ans{animation:faqIn .35s ease both}
+@keyframes faqIn{from{opacity:0;translate:0 -8px}}
+@media (max-width:600px){.faq{padding:20px 0 80px}.faq summary{padding:18px 18px}.faq .ans{padding:0 18px 20px}.faq .ans p{font-size:14.5px}}
