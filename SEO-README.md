@@ -6,7 +6,7 @@ If your real address is different, find-and-replace `https://fitaval.com` in:
 
 | File | What it is for |
 |---|---|
-| `index.html` `<head>` | Title, description, canonical, Open Graph, Twitter card, geo tags, icons |
+| `index.html` `<head>` | Title, description, canonical, Open Graph, Twitter card, geo tags (Malappuram + Kochi), icons |
 | JSON-LD in `index.html` | Organization, WebSite, WebPage and FAQPage data (SEO + rich results + AI answers) |
 | FAQ section (`#faq`) | Short question/answer pairs for answer engines (AEO); text matches the FAQPage data |
 | `robots.txt` | Allows search engines and AI crawlers, points to the sitemap |

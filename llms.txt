@@ -1,6 +1,6 @@
 # Fitaval
 
-> Fitaval is a fitness community platform based in Kochi, Kerala, India. It helps people discover nearby gyms, connect with a supportive community, and track their growth. Tagline: "Discover Fitness. Connect with Community."
+> Fitaval is a fitness community platform based in Kochi and Malappuram, Kerala, India. It helps people discover nearby gyms, connect with a supportive community, and track their growth. Tagline: "Discover Fitness. Connect with Community."
 
 Fitaval brings gyms, trainers, gym owners and fitness enthusiasts together. Members find gyms, studios and workout spots near them, join fitness events and challenges, and monitor their progress. Gym owners get smart tools, analytics and AI innovation for their business.
 
@@ -14,8 +14,9 @@ Fitaval brings gyms, trainers, gym owners and fitness enthusiasts together. Memb
 
 ## Contact
 - Email: Contact@fitaval.com
-- Phone: +91 09991 77796
-- Address: Taliparamba Techies Park at Rajagiri College of Social Science (Autonomous), Rajagiri Rd, Kalamassery, Kochi, Kerala 683104
+- Phone: +91 95391 75084, +91 09991 77796
+- Location: Malappuram, Kerala, India
+- Address (Kochi office): Taliparamba Techies Park at Rajagiri College of Social Science (Autonomous), Rajagiri Rd, Kalamassery, Kochi, Kerala 683104
 - Instagram: https://www.instagram.com/fitaval.app
 - Facebook: https://www.facebook.com/p/Fitaval-61593216647087/
 - LinkedIn: https://www.linkedin.com/company/fitaval/
